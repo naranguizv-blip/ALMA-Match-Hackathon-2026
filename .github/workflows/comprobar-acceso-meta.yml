@@ -1,0 +1,52 @@
+name: Diagnóstico seguro de autenticación Meta (sin inferencia)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/comprobar-acceso-meta.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validar-credencial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Verificar acceso a la lista de modelos sin ejecutar Muse
+        env:
+          MODEL_API_KEY: \${{ secrets.MODEL_API_KEY }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, sys, urllib.request, urllib.error, json
+          key=os.environ.get("MODEL_API_KEY","")
+          if not key:
+              sys.exit("ERROR: GitHub no entregó MODEL_API_KEY")
+          # GET /models es una consulta de metadatos, no genera tokens de IA.
+          req=urllib.request.Request(
+              "https://api.meta.ai/v1/models",
+              headers={"Authorization":"Bearer "+key,"Accept":"application/json"},
+              method="GET",
+          )
+          try:
+              with urllib.request.urlopen(req,timeout=20) as r:
+                  status=r.status
+                  data=r.read(100_000)
+          except urllib.error.HTTPError as e:
+              print("Meta respondió HTTP",e.code)
+              try:
+                  payload=json.loads(e.read(4000).decode("utf-8"))
+                  err=payload.get("error",{})
+                  print("Tipo de error:",str(err.get("type","no informado"))[:80])
+                  print("Código de error:",str(err.get("code","no informado"))[:80])
+              except Exception:
+                  pass
+              sys.exit(1)
+          except Exception:
+              sys.exit("No se pudo consultar la lista de modelos. Verificar conectividad.")
+          print("Autenticación correcta; consulta GET /models respondió HTTP",status)
+          print("No se envió ningún PDF ni se generaron tokens de Muse.")
+          PY
