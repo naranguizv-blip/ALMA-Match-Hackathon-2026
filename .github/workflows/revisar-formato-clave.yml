@@ -1,0 +1,35 @@
+name: Diagnóstico local formato de clave Meta (sin API)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/revisar-formato-clave.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspeccionar-formato:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Comprobar la estructura del secreto sin exponerlo ni llamar a Meta
+        env:
+          MODEL_API_KEY: \${{ secrets.MODEL_API_KEY }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+          k = os.environ.get('MODEL_API_KEY', '')
+          if not k:
+              sys.exit("ERROR: secreto MODEL_API_KEY vacío o ausente")
+          if not k.startswith('LLM|') or k.count('|') != 2:
+              sys.exit("ERROR: la clave guardada no parece tener formato LLM|id|secreto. No se muestra su contenido.")
+          if k != k.strip() or '\\n' in k or '\\r' in k:
+              sys.exit("ERROR: la clave contiene espacios o saltos de línea al inicio o al final.")
+          print("OK: el secreto existe y tiene la estructura esperada por Meta.")
+          print("Esto comprueba formato, NO vigencia ni permisos de la clave.")
+          PY
