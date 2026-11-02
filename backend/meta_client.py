@@ -16,6 +16,11 @@ Las primeras cuatro claves son texto o null. Las otras seis son listas de objeto
 { "descripcion": texto, "pagina_pdf": entero o null, "evidencia": texto breve o null }.
 Distingue porcentajes por red/clínica y por prestación; no atribuyas porcentajes a toda una red si no corresponde.
 Distingue topes anuales frente a topes por evento/prestación. No inventes copagos fijos.
+IMPORTANTE: el campo evidencia debe ser una CITA LITERAL copiada sin cambiar palabras
+desde la página_pdf indicada, preferentemente entre 20 y 80 caracteres continuos.
+No uses paráfrasis, explicaciones, símbolos añadidos ni puntos suspensivos como cita.
+Si no puedes identificar una frase literal y su página, usa evidencia null y
+pagina_pdf null: el verificador externo detendrá la comparación.
 Si falta un dato, usa null o [] y señala incertidumbre en observaciones.
 No incluyas instrucciones para cambiar de isapre ni consejo médico.''' 
 
