@@ -9,7 +9,14 @@
     "urgencia": "Urgencias con copago fijo\nClínica Las Condes\nClínica Universidad de Los Andes\nClínica Santa María\nClínica Dávila\nClínica Dávila Vespucio\n\nOtras clínicas preferentes: cobertura ambulatoria correspondiente del plan.\n\nFuera de la red preferente: cobertura de libre elección según el plan.",
     "precio_final_uf": null,
     "revision": "Extracción de coberturas realizada previamente; pendiente de cotejar condiciones con el PDF original.",
-    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026"
+    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026",
+    "tipo_plan": "Individual",
+    "periodo_comercializacion": "202608",
+    "comercializacion_verificada": true,
+    "fuente_comercializacion": "Planes_de_Salud_202608.txt (registro oficial aportado)",
+    "coberturas_verificadas": false,
+    "topes_verificados": false,
+    "revisado_para_comparacion": false
   },
   {
     "codigo": "BPT260679",
@@ -21,7 +28,14 @@
     "urgencia": "Urgencias con copago fijo\nClínica Las Condes\nClínica Universidad de Los Andes\nClínica Santa María\nClínica Dávila\nClínica Dávila Vespucio\n\nOtras clínicas preferentes: cobertura ambulatoria correspondiente del plan.\n\nFuera de la red preferente: cobertura de libre elección según el plan.",
     "precio_final_uf": null,
     "revision": "Extracción de coberturas realizada previamente; pendiente de cotejar condiciones con el PDF original.",
-    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026"
+    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026",
+    "tipo_plan": "Individual",
+    "periodo_comercializacion": "202608",
+    "comercializacion_verificada": true,
+    "fuente_comercializacion": "Planes_de_Salud_202608.txt (registro oficial aportado)",
+    "coberturas_verificadas": false,
+    "topes_verificados": false,
+    "revisado_para_comparacion": false
   },
   {
     "codigo": "BCG260744",
@@ -33,7 +47,14 @@
     "urgencia": "Urgencias con copago fijo\nClínica Santa María\nClínica Dávila\nClínica Dávila Vespucio\n\nOtras clínicas preferentes: cobertura ambulatoria correspondiente del plan.\n\nFuera de la red preferente: cobertura de libre elección según el plan.",
     "precio_final_uf": null,
     "revision": "Extracción de coberturas realizada previamente; pendiente de cotejar condiciones con el PDF original.",
-    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026"
+    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026",
+    "tipo_plan": "Individual",
+    "periodo_comercializacion": "202608",
+    "comercializacion_verificada": true,
+    "fuente_comercializacion": "Planes_de_Salud_202608.txt (registro oficial aportado)",
+    "coberturas_verificadas": false,
+    "topes_verificados": false,
+    "revisado_para_comparacion": false
   },
   {
     "codigo": "BSCF2605812",
@@ -45,7 +66,14 @@
     "urgencia": "Urgencias preferentes\nCobertura preferente de urgencia con porcentajes propios en los prestadores indicados en el plan.\n\nOtras urgencias\nCobertura de libre elección según las condiciones del plan.",
     "precio_final_uf": null,
     "revision": "Extracción de coberturas realizada previamente; pendiente de cotejar condiciones con el PDF original.",
-    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026"
+    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026",
+    "tipo_plan": "Individual",
+    "periodo_comercializacion": "202608",
+    "comercializacion_verificada": true,
+    "fuente_comercializacion": "Planes_de_Salud_202608.txt (registro oficial aportado)",
+    "coberturas_verificadas": false,
+    "topes_verificados": false,
+    "revisado_para_comparacion": false
   },
   {
     "codigo": "BSNB260288",
@@ -57,7 +85,14 @@
     "urgencia": "Urgencias preferentes\nCobertura preferente de urgencia con porcentajes propios en los prestadores indicados en el plan.\n\nOtras urgencias\nCobertura de libre elección según las condiciones del plan.",
     "precio_final_uf": null,
     "revision": "Extracción de coberturas realizada previamente; pendiente de cotejar condiciones con el PDF original.",
-    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026"
+    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026",
+    "tipo_plan": "Individual",
+    "periodo_comercializacion": "202608",
+    "comercializacion_verificada": true,
+    "fuente_comercializacion": "Planes_de_Salud_202608.txt (registro oficial aportado)",
+    "coberturas_verificadas": false,
+    "topes_verificados": false,
+    "revisado_para_comparacion": false
   },
   {
     "codigo": "BSSLU2411C3",
@@ -69,6 +104,13 @@
     "urgencia": "Urgencias preferentes\nCobertura preferente de urgencia con porcentajes propios en los prestadores indicados en el plan.\n\nOtras urgencias\nCobertura de libre elección según las condiciones del plan.",
     "precio_final_uf": null,
     "revision": "Extracción de coberturas realizada previamente; pendiente de cotejar condiciones con el PDF original.",
-    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026"
+    "origen": "Extracto entregado para la Biblioteca de Planes, agosto 2026",
+    "tipo_plan": "Individual",
+    "periodo_comercializacion": "202608",
+    "comercializacion_verificada": true,
+    "fuente_comercializacion": "Planes_de_Salud_202608.txt (registro oficial aportado)",
+    "coberturas_verificadas": false,
+    "topes_verificados": false,
+    "revisado_para_comparacion": false
   }
 ]
