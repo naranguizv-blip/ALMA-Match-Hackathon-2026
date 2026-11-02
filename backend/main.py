@@ -8,6 +8,7 @@ from pypdf import PdfReader
 from .comparison import compare, legal_7_estimate
 from .meta_client import analyze_pdf
 from .verification import verify_document_claims
+from .demo_scenarios import synthetic_case
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
@@ -71,6 +72,16 @@ async def demo(isapre_actual:str=Form(...),clinicas:str=Form(...),objetivo:str=F
     example=json.loads((HERE/'extraccion_demo.json').read_text(encoding='utf-8'))
     return build_response(example,isapre_actual,clinics,objetivo,renta_imponible,pactado_uf,pago_actual,True)
 
+
+
+
+@app.get('/api/demo-caso/{scenario}')
+def demo_case(scenario: str):
+    """Sin claves ni créditos: escenarios plenamente inventados y separados del catálogo real."""
+    try:
+        return synthetic_case(scenario)
+    except ValueError:
+        raise HTTPException(404, 'Caso ficticio no disponible')
 
 @app.post('/api/analizar')
 async def analizar(pdf:UploadFile=File(...),isapre_actual:str=Form(...),clinicas:str=Form(...),
