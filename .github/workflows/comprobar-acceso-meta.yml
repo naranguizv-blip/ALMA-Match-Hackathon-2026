@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Verificar acceso a la lista de modelos sin ejecutar Muse
         env:
-          MODEL_API_KEY: \${{ secrets.MODEL_API_KEY }}
+          MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
         shell: bash
         run: |
           python - <<'PY'
