@@ -4,7 +4,10 @@ from pathlib import Path
 import requests
 
 CODE = "CS50400826"
-URL = "https://cotizadorsalud.cl/pdf/CS50400826.pdf"
+URLS = [
+    "https://www.planisapre.com/cotizador/pdf/CS50400826.pdf",
+    "https://cotizadorsalud.cl/pdf/CS50400826.pdf",
+]
 API = "https://api.meta.ai/v1/responses"
 KEYS = ("codigo_plan","isapre","nombre_plan","modalidad",
         "hospitalaria","ambulatoria","urgencia",
@@ -25,21 +28,32 @@ def abort(msg):
 def main():
     key = os.getenv("MODEL_API_KEY","").strip()
     if not key: abort("Secreto MODEL_API_KEY ausente")
-    try:
-        r = requests.get(URL, timeout=30, headers={"Accept":"application/pdf"},
-                         allow_redirects=True, stream=True)
-    except requests.RequestException: abort("No se pudo acceder al PDF público. Sin gasto Meta.")
-    if r.status_code != 200:
-        abort(f"Descarga pública HTTP {r.status_code}. Sin gasto Meta.")
-    chunks = []
-    n = 0
-    for chunk in r.iter_content(131072):
-        n += len(chunk)
-        if n > 15_000_000: abort("PDF supera 15 MB; sin gasto Meta.")
-        chunks.append(chunk)
-    pdf = b"".join(chunks)
-    if not pdf.startswith(b"%PDF-"):
-        abort("La fuente devolvió un archivo distinto de PDF; sin gasto Meta.")
+    pdf = None
+    source = None
+    for address in URLS:
+        try:
+            r = requests.get(address, timeout=25, stream=True)
+        except requests.RequestException:
+            print("La fuente pública no respondió, se revisará la siguiente opción.")
+            continue
+        if r.status_code != 200:
+            print(f"Fuente pública devolvió HTTP {r.status_code}; no se hizo llamada a Meta.")
+            r.close()
+            continue
+        chunks = []
+        n = 0
+        for chunk in r.iter_content(131072):
+            n += len(chunk)
+            if n > 15_000_000:
+                abort("PDF supera 15 MB; sin gasto Meta.")
+            chunks.append(chunk)
+        r.close()
+        candidate = b"".join(chunks)
+        if candidate.startswith(b"%PDF-"):
+            pdf, source = candidate, address
+            break
+    if pdf is None:
+        abort("Las fuentes públicas impiden descargar el contrato; no se usó Meta.")
     print(f"PDF público leído: {len(pdf)} bytes. No se guardará en GitHub.")
     payload = {
         "model": "muse-spark-1.3",
@@ -76,7 +90,7 @@ def main():
         if not isinstance(result.get(field),list):
             abort(f"Respuesta sin lista {field}; esquema pendiente.")
     result["estado_verificacion"]="extraido_por_IA_pendiente_revision"
-    result["url_origen"]=URL
+    result["url_origen"]=source
     result["precio_final"]=None
     path=Path("resultados/extraccion_esencial_real.json")
     path.parent.mkdir(exist_ok=True)
