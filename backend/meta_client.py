@@ -1,95 +1,82 @@
-"""Cliente de Meta Model API: secretos únicamente en el proceso del servidor."""
+"""Cliente Meta Model API: solamente para servidor local, sin secretos en frontend."""
 import base64
 import json
 import os
 import re
-
 import requests
 
-API_URL = "https://api.meta.ai/v1/responses"
+API_URL = 'https://api.meta.ai/v1/responses'
+REQUIRED = ('isapre','codigo_plan','nombre_plan','modalidad','hospitalaria','ambulatoria',
+            'urgencia','clinicas_preferentes','topes','observaciones')
+PROMPT = '''Lee cuidadosamente el PDF adjunto. Es un contrato de plan de salud chileno.
+Extrae SOLO datos respaldados por este PDF, nunca inventes precios ni ahorros.
+Responde EXCLUSIVAMENTE JSON válido con estas 10 claves:
+"isapre", "codigo_plan", "nombre_plan", "modalidad", "hospitalaria", "ambulatoria", "urgencia", "clinicas_preferentes", "topes", "observaciones".
+Las primeras cuatro claves son texto o null. Las otras seis son listas de objetos
+{ "descripcion": texto, "pagina_pdf": entero o null, "evidencia": texto breve o null }.
+Distingue porcentajes por red/clínica y por prestación; no atribuyas porcentajes a toda una red si no corresponde.
+Distingue topes anuales frente a topes por evento/prestación. No inventes copagos fijos.
+Si falta un dato, usa null o [] y señala incertidumbre en observaciones.
+No incluyas instrucciones para cambiar de isapre ni consejo médico.''' 
 
-PROMPT = """Eres un extractor de condiciones CONTRACTUALES de un plan de salud de Chile.
-Lee el PDF completo. No calcules precios, ahorros ni consejo médico.
-No inventes datos. Si faltan, usa null y registra la duda.
-Responde EXCLUSIVAMENTE con JSON válido y estas claves:
-{
- "isapre": null, "codigo_plan": null, "nombre_plan": null, "modalidad": null,
- "cobertura_hospitalaria": [], "cobertura_ambulatoria": [], "urgencia": [],
- "clinicas_preferentes": [], "topes": [], "observaciones": []
-}
-En cada elemento de cobertura, urgencia, clínica o tope incluye un objeto con
-descripcion, pagina_pdf (entero o null), texto_evidencia (cita breve o null).
-Distingue tope por evento frente a tope anual.
-No atribuyas a una clínica cobertura de otra y nunca declares los datos verificados.
-"""
 
-def extract_output_text(response: dict) -> str:
-    if isinstance(response.get("output_text"), str):
-        return response["output_text"]
-    chunks = []
-    for entry in response.get("output", []):
-        if not isinstance(entry, dict):
+def output_text(response):
+    if isinstance(response.get('output_text'),str) and response['output_text']:
+        return response['output_text']
+    chunks=[]
+    for x in response.get('output',[]):
+        if not isinstance(x,dict):
             continue
-        for item in entry.get("content", []):
-            if isinstance(item, dict) and isinstance(item.get("text"), str):
-                chunks.append(item["text"])
+        for part in x.get('content',[]):
+            if isinstance(part,dict) and isinstance(part.get('text'),str):
+                chunks.append(part['text'])
     if chunks:
-        return "\n".join(chunks)
-    raise ValueError("Meta no devolvió texto utilizable")
+        return '\n'.join(chunks)
+    raise ValueError('Meta no entregó texto utilizable')
 
-def decode_json(text: str) -> dict:
-    t = text.strip()
-    if t.startswith("```"):
-        t = re.sub(r"^```(?:json)?\s*", "", t, flags=re.I)
-        t = re.sub(r"\s*```$", "", t)
+
+def decode_json(raw):
+    text = re.sub(r'^```(?:json)?\s*|\s*```$', '',raw.strip(), flags=re.I)
     try:
-        obj = json.loads(t)
+        obj=json.loads(text)
     except json.JSONDecodeError as exc:
-        raise ValueError("La respuesta no contiene JSON válido") from exc
-    if not isinstance(obj, dict):
-        raise ValueError("Respuesta JSON debe ser un objeto")
-    required = (
-        "isapre", "codigo_plan", "nombre_plan", "modalidad",
-        "cobertura_hospitalaria", "cobertura_ambulatoria", "urgencia",
-        "clinicas_preferentes", "topes", "observaciones",
-    )
-    for key in required:
+        raise ValueError('Meta respondió, pero su JSON está incompleto') from exc
+    if not isinstance(obj,dict):
+        raise ValueError('Respuesta JSON no es un objeto')
+    for key in REQUIRED:
         if key not in obj:
-            raise ValueError(f"Falta el campo {key}")
-    for key in required[4:]:
-        if not isinstance(obj[key], list):
-            raise ValueError(f"Campo {key} debe ser lista")
-    obj["estado_verificacion"] = "extraido_por_ia_pendiente_revision"
+            raise ValueError(f'Falta el campo {key}')
+    for key in REQUIRED[4:]:
+        if not isinstance(obj[key],list):
+            raise ValueError(f'Campo {key} no es una lista')
+    # El modelo nunca puede acreditarse por sí mismo como "verificado".
+    obj['estado_verificacion']='extraido_por_IA_pendiente_revision'
+    obj['precio_final']=None
     return obj
 
-def analyze_pdf(pdf_bytes: bytes) -> dict:
-    key = os.getenv("MODEL_API_KEY", "").strip()
-    if not key or key == "COLOCA_AQUI_TU_CLAVE_LOCALMENTE":
-        raise RuntimeError("Falta configurar MODEL_API_KEY en el servidor")
-    model = os.getenv("MODEL_NAME", "muse-spark-1.3")
-    pdf_url = "data:application/pdf;base64," + base64.b64encode(pdf_bytes).decode("ascii")
-    payload = {
-        "model": model,
-        "input": [{"role": "user", "content": [
-            {"type": "input_text", "text": PROMPT},
-            {"type": "input_file", "filename": "contrato_prueba.pdf", "file_data": pdf_url},
-        ]}],
+
+def analyze_pdf(raw):
+    key=os.environ.get('MODEL_API_KEY','').strip()
+    if not key:
+        raise RuntimeError('La clave Meta no está configurada en el servidor')
+    body={
+       'model':os.environ.get('MODEL_NAME','muse-spark-1.3'),
+       'reasoning':{'effort':'low'},
+       'max_output_tokens':8000,
+       'input':[{'role':'user','content':[
+          {'type':'input_text','text':PROMPT},
+          {'type':'input_file','filename':'contrato_prueba.pdf',
+           'file_data':'data:application/pdf;base64,'+base64.b64encode(raw).decode('ascii')}
+       ]}]
     }
     try:
-        response = requests.post(
-            API_URL,
-            headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
-            json=payload,
-            timeout=120,
-        )
+        r=requests.post(API_URL,headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},json=body,timeout=160)
     except requests.RequestException as exc:
-        raise RuntimeError("No se pudo conectar con Meta Model API") from exc
-    if response.status_code != 200:
-        raise RuntimeError(f"Meta devolvió HTTP {response.status_code}; revisar cuenta, modelo y créditos")
+        raise RuntimeError('No se pudo consultar la API de Meta') from exc
+    if r.status_code != 200:
+        raise RuntimeError(f'Meta respondió HTTP {r.status_code}; revisa credencial y disponibilidad del modelo')
     try:
-        raw = response.json()
+        data=r.json()
     except ValueError as exc:
-        raise RuntimeError("Meta devolvió una respuesta no JSON") from exc
-    result = decode_json(extract_output_text(raw))
-    result["modelo_utilizado"] = model
-    return result
+        raise RuntimeError('Meta no entregó una respuesta JSON de API') from exc
+    return decode_json(output_text(data))
