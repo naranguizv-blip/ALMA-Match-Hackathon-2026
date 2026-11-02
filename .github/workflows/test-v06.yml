@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - desarrollo/muse-pdf-v0.5
+      - desarrollo/comparador-visual-v0.6
   workflow_dispatch:
 permissions:
   contents: read
