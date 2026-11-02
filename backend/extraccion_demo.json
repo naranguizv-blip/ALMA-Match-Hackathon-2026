@@ -1,0 +1,51 @@
+{
+  "codigo_plan": "CS50400826",
+  "isapre": "Esencial",
+  "nombre_plan": "Plan Esencial Centro Sur 50H40A-0826",
+  "modalidad": "Complementario con prestadores preferentes",
+  "hospitalaria": [
+    {
+      "descripcion": "Cobertura preferente hospitalaria de 60 % en RedSalud Santiago, Vitacura, Providencia y Dávila Recoleta/Vespucio; 50 % en otras redes centro-sur; 40 % en red adicional. Varía por prestación y red.",
+      "pagina_pdf": 1,
+      "evidencia": "Fuente contractual resumida. Pendiente de comprobación prestación por prestación."
+    }
+  ],
+  "ambulatoria": [
+    {
+      "descripcion": "Ambulatoria preferente con porcentajes distintos según prestación y prestador (entre 40 % y 50 % en varias categorías del plan).",
+      "pagina_pdf": 1,
+      "evidencia": "Fuente contractual resumida. No usar como porcentaje único para cada prestación."
+    }
+  ],
+  "urgencia": [
+    {
+      "descripcion": "La urgencia en prestadores nominados sigue la cobertura preferente ambulatoria; fuera de red se aplica Libre Elección con condiciones.",
+      "pagina_pdf": 1,
+      "evidencia": "Revisar cláusulas de urgencia en el contrato."
+    }
+  ],
+  "clinicas_preferentes": [
+    {
+      "descripcion": "RedSalud Santiago, RedSalud Vitacura, RedSalud Providencia, Dávila Recoleta y Dávila Vespucio; red centro-sur con clínicas adicionales.",
+      "pagina_pdf": 3,
+      "evidencia": "Red detallada en página 3."
+    }
+  ],
+  "topes": [
+    {
+      "descripcion": "Tope general anual de 7.000 UF por beneficiario. Existen topes específicos según prestación y modalidad.",
+      "pagina_pdf": 2,
+      "evidencia": "Tope general anual por beneficiario."
+    }
+  ],
+  "observaciones": [
+    {
+      "descripcion": "Para acceder a cobertura preferente pueden aplicar convenios de médicos staff y condiciones de habitación.",
+      "pagina_pdf": 3,
+      "evidencia": "Condiciones de atención preferente."
+    }
+  ],
+  "estado_verificacion": "extraido_por_IA_pendiente_revision",
+  "precio_final": null,
+  "url_origen": "PDF Esencial CS50400826 (contrato de prueba público)"
+}
