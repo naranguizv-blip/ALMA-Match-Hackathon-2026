@@ -45,7 +45,8 @@ payload = {
             {"type": "input_file", "filename": "alma_demo_ficticia.pdf", "file_data": pdf_data},
         ],
     }],
-    "max_output_tokens": 220,
+    "reasoning": {"effort": "low"},
+    "max_output_tokens": 2048,
 }
 
 try:
@@ -74,7 +75,13 @@ except (ValueError, TypeError):
     sys.exit("ERROR: no se pudo interpretar la respuesta de Meta")
 
 if PDF_CODE not in output.upper().replace("-", "").replace(" ", ""):
-    sys.exit("ERROR: Muse respondió, pero no extrajo el código del PDF. Revisar formato de salida.")
+    usage = data.get("usage", {})
+    print("DIAGNOSTICO: estado del modelo:", data.get("status", "no indicado"))
+    print("DIAGNOSTICO: tokens salida:", usage.get("output_tokens", "no indicado"))
+    print("DIAGNOSTICO: tokens razonamiento:",
+          usage.get("output_tokens_details", {}).get("reasoning_tokens", "no indicado"))
+    print("DIAGNOSTICO: respuesta del modelo al PDF inventado:", repr(output[:350]))
+    sys.exit("ERROR: No se encontró el código ficticio en el texto de respuesta.")
 
 print("OK: Muse Spark 1.3 leyó el PDF ficticio y reconoció el código esperado.")
 print("La clave no fue mostrada; no se procesaron datos de clientes.")
