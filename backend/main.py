@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from pypdf import PdfReader
 from .comparison import compare, legal_7_estimate
 from .meta_client import analyze_pdf
+from .verification import verify_document_claims
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
@@ -14,7 +15,7 @@ MAX_BYTES=15*1024*1024
 app=FastAPI(title='ALMA Match Hackathon — Demo',docs_url=None,redoc_url=None)
 
 
-def build_response(extracted, isapre_actual, clinicas, objetivo, renta_imponible, pactado_uf, pago_actual, demo):
+def build_response(extracted, isapre_actual, clinicas, objetivo, renta_imponible, pactado_uf, pago_actual, demo, verification=None):
     if not isinstance(clinicas,list) or len(clinicas)>10 or any(not isinstance(x,str) or len(x)>120 for x in clinicas):
         raise HTTPException(400,'Lista de clínicas inválida')
     if not isinstance(isapre_actual,str) or len(isapre_actual)>60:
@@ -33,8 +34,17 @@ def build_response(extracted, isapre_actual, clinicas, objetivo, renta_imponible
         payment=None
     if payment is not None and not (0<payment<100_000_000):
         payment=None
+    preliminary = compare(isapre_actual,clinicas,objetivo,payment,document_isapre=extracted.get('isapre'))
+    if not verification or not verification.get('aprobado_para_comparacion'):
+        preliminary['alternativas'] = []
+        preliminary['error'] = ('Contrato no verificado documentalmente: ' +
+            '; '.join((verification or {}).get('motivos', [])[:2])
+            if verification else 'Ejemplo precargado sin validación independiente del PDF. No ofrece alternativas verificadas.')
+        preliminary['estado'] = 'bloqueado_pendiente_revision'
     return {'resultado':extracted,
-            'comparacion':compare(isapre_actual,clinicas,objetivo,payment,document_isapre=extracted.get('isapre')),
+            'verificacion_documental':verification or {'estado':'revision_requerida','aprobado_para_comparacion':False,
+                 'motivos':['Ejemplo sin PDF original en esta ejecución']},
+            'comparacion':preliminary,
             'finanzas':{'pactado_uf':p,'pago_actual_clp':payment,
                         'cotizacion_legal_estimada':legal_7_estimate(renta_imponible)},
             'demostracion_precargada':demo,
@@ -88,6 +98,7 @@ async def analizar(pdf:UploadFile=File(...),isapre_actual:str=Form(...),clinicas
         extracted=analyze_pdf(raw)
     except (RuntimeError,ValueError) as exc:
         raise HTTPException(502,str(exc))
-    result=build_response(extracted,isapre_actual,clinics,objetivo,renta_imponible,pactado_uf,pago_actual,False)
+    verification=verify_document_claims(extracted,raw)
+    result=build_response(extracted,isapre_actual,clinics,objetivo,renta_imponible,pactado_uf,pago_actual,False,verification)
     result['paginas_pdf']=pages
     return result
