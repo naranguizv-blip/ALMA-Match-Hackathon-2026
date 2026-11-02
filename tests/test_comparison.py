@@ -13,10 +13,8 @@ def test_excludes_same_isapre():
 
 def test_real_network_matches_are_limited():
     result=compare('Esencial',['Clínica Indisa'],'ahorro',120000)
-    assert result['alternativas']
-    assert len(result['alternativas'])<=3
-    assert all(x['isapre']=='Banmédica' for x in result['alternativas'])
-    assert all(x['precio_final_uf'] is None and not x['ahorro_verificado'] for x in result['alternativas'])
+    assert result['alternativas']==[]  # las coberturas no han sido certificadas
+    assert result['estado']=='Sin alternativas documentales verificadas para mostrar.'
     assert 'no se puede asegurar' in result['mensaje_ahorro']
 
 
