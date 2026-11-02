@@ -2,6 +2,10 @@ name: Leer contrato real Esencial con Muse
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/contrato-real-esencial.yml'
 
 permissions:
   contents: read
