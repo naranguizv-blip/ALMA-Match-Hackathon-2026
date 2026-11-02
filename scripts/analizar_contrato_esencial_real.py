@@ -28,6 +28,8 @@ def abort(msg):
 def main():
     key = os.getenv("MODEL_API_KEY","").strip()
     if not key: abort("Secreto MODEL_API_KEY ausente")
+    if not key.startswith("LLM|") or key.count("|") != 2:
+        abort("El secreto no tiene formato Meta LLM|id|secreto. Sin gasto Meta.")
     pdf = None
     source = None
     for address in URLS:
