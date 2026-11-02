@@ -1,1 +1,144 @@
-<!doctype html><html lang="es-CL"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ALMA Match · Prueba Muse Spark</title><style>body{font:16px system-ui;background:#f1f8f7;color:#153b43;margin:0}header{background:#123343;color:white;padding:18px}main{background:white;max-width:690px;margin:35px auto;padding:28px;border-radius:18px}p{color:#4e6970}button{background:#087f7d;color:white;border:0;border-radius:9px;padding:12px;cursor:pointer;margin-top:14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eef5f4;padding:18px;border-radius:9px}input{display:block;margin:12px 0}small{color:#526c71}</style></head><body><header><b>ALMA Match</b> · Hackathon 2026</header><main><h1>Analizar contrato con Muse Spark</h1><p>Prueba técnica con PDF público sin información personal. Este módulo extrae datos, pero aún no calcula precios ni compara planes.</p><form id="form"><label>PDF de prueba<input type="file" name="pdf" accept=".pdf,application/pdf" required></label><button type="submit">Analizar con Meta</button></form><p id="status" role="status"></p><section id="result" hidden><h2>Extracción pendiente de verificación</h2><pre id="json"></pre><button id="download" type="button">Guardar JSON</button></section><small>No enviar documentos de clientes reales. La clave API solo reside en el servidor local.</small></main><script>let last=null;document.getElementById('form').addEventListener('submit',async e=>{e.preventDefault();const s=document.getElementById('status'),r=document.getElementById('result'),btn=e.target.querySelector('button');btn.disabled=true;r.hidden=true;s.textContent='Analizando…';try{const fd=new FormData(e.target),res=await fetch('/api/analizar',{method:'POST',body:fd}),data=await res.json();if(!res.ok)throw Error(data.detail||'Error de análisis');last=data;document.getElementById('json').textContent=JSON.stringify(data,null,2);r.hidden=false;s.textContent='Extracción recibida; verificar contra el PDF.'}catch(err){s.textContent=err.message}finally{btn.disabled=false}});document.getElementById('download').addEventListener('click',()=>{if(!last)return;const url=URL.createObjectURL(new Blob([JSON.stringify(last,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='alma-match-extraccion.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)})</script></body></html>
+<!doctype html><html lang="es-CL"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ALMA Match · Comparación inteligente v0.6</title><style>
+:root{--ink:#152b34;--muted:#60737b;--navy:#122f40;--sea:#087f7d;--lt:#e9f7f5;--stroke:#deebe9;--paper:#fff;--bg:#f4f8f8;--warn:#8a5a22}*{box-sizing:border-box}body{margin:0;color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg)}button,input,textarea{font:inherit}button{cursor:pointer}header{background:var(--navy);color:#fff}.top{max-width:1100px;margin:auto;display:flex;gap:18px;align-items:center;justify-content:space-between;padding:18px 22px}.brand{display:flex;gap:12px;align-items:center}.logo{height:44px;width:44px;display:grid;place-items:center;border-radius:14px;background:#0a8988;color:white;font-weight:850;font-size:22px;letter-spacing:-1px}.brand strong{font-size:20px;letter-spacing:-.5px}.brand small{display:block;color:#b9d5d8;font-size:12px;margin-top:-4px}.headnote{font-size:12px;color:#b4cdd1}.headnote b{color:#fff}.wrap{max-width:1100px;margin:28px auto;padding:0 22px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:22px}.rail,.workspace{background:#fff;border:1px solid var(--stroke);border-radius:20px;box-shadow:0 10px 35px rgba(15,64,70,.05)}.rail{padding:24px;align-self:start}.rail h3{margin:0 0 18px;font-size:15px}.step{display:flex;align-items:center;gap:10px;padding:10px 0;color:var(--muted);font-size:14px}.step span{flex:0 0 26px;width:26px;height:26px;border:1px solid var(--stroke);border-radius:50%;display:grid;place-items:center;font-size:12px}.step.active{font-weight:700;color:var(--sea)}.step.active span{background:var(--sea);color:white;border-color:var(--sea)}.step.done{color:#388282}.step.done span{background:var(--lt);color:var(--sea);border-color:var(--lt)}.railnote{border-top:1px solid var(--stroke);padding-top:18px;margin-top:18px;color:var(--muted);font-size:12px}.workspace{padding:0;overflow:hidden}.bar{height:7px;background:#edf4f3}.bar>div{background:linear-gradient(90deg,#139593,#53c6b0);height:100%;width:5%;transition:width .2s}.content{padding:36px 42px 32px;min-height:480px}.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#128e86;font-weight:800}.hero{font-size:clamp(25px,3.3vw,35px);line-height:1.16;margin:12px 0 14px;letter-spacing:-.8px}.lead{font-size:16px;color:#536a73;margin:0 0 28px;max-width:690px}.bubble{background:#eff7f6;border:1px solid #d6ede9;border-radius:16px 16px 16px 5px;padding:18px 20px;margin-bottom:24px;color:#204a52}.bubble b{color:#0a716d}.field{display:block;color:#344d54;font-weight:650;margin:18px 0 8px}.input,.textarea{display:block;width:100%;min-height:49px;background:#fff;border:1px solid #c9dcd9;border-radius:11px;padding:12px 13px;color:var(--ink)}.input:focus,.textarea:focus{outline:3px solid #ccebe6;border-color:#189c93}.textarea{min-height:106px;resize:vertical}.muted{color:var(--muted);font-size:13px}.actions{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:28px;flex-wrap:wrap}.primary,.ghost{border-radius:12px;padding:12px 20px;font-weight:750;border:1px solid transparent}.primary{background:#087d7c;color:#fff}.primary:hover{background:#076e6c}.primary:disabled{opacity:.45;cursor:not-allowed}.ghost{background:white;color:#356067;border-color:#d6e5e2}.ghost:hover{background:#f2f8f7}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.chip{border:1px solid #d1e2e1;border-radius:12px;background:#fff;padding:13px;text-align:left;min-height:52px;font-size:14px;color:#314d55}.chip.on{border-color:#087f7d;background:#e8f7f4;color:#075e5c;font-weight:750}.rows{display:grid;gap:9px}.load-age{display:flex;gap:10px;align-items:center}.load-age input{max-width:150px}.load-age label{width:95px;font-weight:650}.tag{display:inline-block;background:#edf5f4;border:1px solid #d3e9e5;color:#126b69;border-radius:999px;font-weight:750;font-size:12px;padding:4px 9px}.warn{background:#fff8e9;border:1px solid #f3dfb6;color:var(--warn);border-radius:13px;padding:13px 15px;font-size:13px;margin:12px 0}.fact{border:1px solid #d9e9e5;background:#fbfefe;border-radius:15px;padding:17px;margin:13px 0}.fact h3{margin:0 0 7px;font-size:16px}.fact p{margin:6px 0;color:#445e67}.fact strong{color:#15484b}.twocol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.money{font-size:29px;font-weight:820;letter-spacing:-.9px}.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile{padding:16px;border:1px solid #d9eae6;border-radius:14px}.tile b{display:block;font-size:20px}.tile small{color:#667a80}.hr{height:1px;background:var(--stroke);margin:24px 0}.file{display:block;width:100%;border:2px dashed #b5d9d3;padding:22px;border-radius:14px;background:#f8fdfc;cursor:pointer}.file input{width:100%;margin-top:12px}.tiny{font-size:12px;color:var(--muted)}.hidden{display:none!important}details{margin-top:15px}summary{cursor:pointer;color:#087f7d;font-weight:750}footer{max-width:1100px;margin:14px auto 36px;padding:0 24px;color:#70838a;font-size:12px}.badge-demo{border:1px solid #78afb4;color:#e0f7f7;border-radius:999px;font-size:12px;padding:5px 10px}.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.notice{margin-top:20px;background:#f3f8f8;border-left:3px solid #399891;padding:14px 16px;color:#47626b;font-size:13px}.checkboxLine{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px}.checkboxLine input{margin-top:5px}.banner{background:#eaf7f2;border:1px solid #c9e7df;padding:17px;border-radius:14px}.sub{font-size:12px;font-weight:800;text-transform:uppercase;color:var(--sea);letter-spacing:.06em}.twoitems{display:grid;grid-template-columns:1fr 1fr;gap:12px}.miniaction{background:none;border:none;color:#087f7d;text-decoration:underline;padding:0;font-weight:700}.listline{padding-left:19px}.listline li{margin-bottom:8px}@media(max-width:780px){.wrap{grid-template-columns:1fr;gap:12px;margin:12px auto}.rail{padding:15px 20px}.steps{display:grid;grid-template-columns:repeat(3,1fr);column-gap:10px}.step{font-size:11px}.step span{width:23px;height:23px;flex-basis:23px}.railnote{margin-top:8px;padding-top:10px}.content{padding:27px 22px;min-height:390px}.top{padding:14px}.headnote{display:none}.options,.twocol,.tiles,.twoitems{grid-template-columns:1fr}.hero{font-size:27px}}@media print{header,.rail,.actions,footer{display:none}.wrap{display:block}.workspace{box-shadow:none;border:0}}
+
+.currentcard,.matchcard{border:1px solid #d6e9e5;border-radius:17px;padding:18px;background:#fff;margin:14px 0}.currentcard{background:#f5fbf9}.currentcard h2,.matchcard h3{margin:8px 0;font-size:19px;line-height:1.25}.matchcard.featured{border-color:#a4d4c9;background:#f5fcf9}.matchtop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.state{font-size:12px;color:#647a80}.metricbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}.metricbar>div{background:#eef6f5;border-radius:11px;padding:11px 10px;min-width:0}.metricbar small{display:block;font-size:11px;color:#58747a;line-height:1.35}.metricbar strong{display:block;color:#087f7d;font-size:18px;margin:3px 0;overflow-wrap:anywhere}.price{padding-top:12px;border-top:1px solid #d6e7e3;display:flex;flex-direction:column;gap:1px}.price strong{font-size:21px;color:#133e45}.price small{font-size:12px;color:#52686d}.choiceheading{font-size:20px;margin:27px 0 5px}.comparisons{display:grid;grid-template-columns:1fr;gap:10px}.comparisons .matchcard{margin:0}.detailcontent{padding:9px 1px 1px;color:#415960}.paymententry{display:flex;align-items:center;gap:12px}.paymententry span{font-size:22px;font-weight:800}.paymententry input{flex:1;min-width:0}.matchcard p{margin:9px 0}.matchcard .metricbar{margin:12px 0}.matchcard details{margin-top:13px}
+@media(max-width:700px){.metricbar{grid-template-columns:repeat(2,minmax(0,1fr))}.metricbar>div:last-child:nth-child(3){grid-column:span 2}.currentcard,.matchcard{padding:14px}}
+
+/* v0.3: conversación sin menú lateral ni cuenta de pasos */
+.wrap{display:block;max-width:850px;margin:24px auto;padding:0 16px}
+.workspace{width:100%}.content{padding:30px 35px 34px}
+.metricbar{grid-template-columns:repeat(4,minmax(0,1fr))}
+.financegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px}
+.finpreview{margin:16px 0 0;padding:15px 16px;border:1px solid #cfe7df;background:#f2faf7;border-radius:14px}
+.finpreview .twoitems{margin-top:8px}
+.finpreview strong{display:block;color:#0a6e69;font-size:17px}
+.finpreview small{display:block;color:#58747a;font-size:12px}
+@media(max-width:670px){.wrap{margin:10px auto;padding:0 10px}.content{padding:23px 18px}.financegrid,.finpreview .twoitems{grid-template-columns:1fr}.metricbar{grid-template-columns:repeat(2,minmax(0,1fr))}.metricbar>div:last-child:nth-child(3){grid-column:auto}}
+
+/* v0.4 */
+.workspace .bar{height:6px}.bar>div{width:0}
+.progresslabel{font-size:12px;color:var(--muted);text-align:right;padding:8px 35px 0}
+.metricbar{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))!important}
+.err{color:#b4232c;font-size:13px;font-weight:650;margin:14px 0 0;min-height:0}
+.err:empty{display:none}
+.input.bad{border-color:#d9534f;outline:3px solid #f7d4d3}
+.compare{margin:16px 0 6px;display:grid;gap:14px}
+.cmprow small{display:block;font-size:12px;color:#4d666c;margin-bottom:5px;font-weight:650}
+.cmpline{display:grid;grid-template-columns:96px 1fr 92px;gap:8px;align-items:center;font-size:12px;color:#52686d;margin:3px 0}
+.cmptrack{height:12px;background:#edf3f2;border-radius:99px;overflow:hidden}
+.cmptrack>div{height:100%;border-radius:99px}
+.cmpold>div{background:#b8c6c9}.cmpnew>div{background:linear-gradient(90deg,#139593,#53c6b0)}
+.cmpline b{color:#133e45;text-align:right}
+.demoflag{display:inline-block;background:#fff4dc;color:#8a5a22;border:1px solid #f0d9a8;border-radius:999px;font-size:11px;font-weight:800;padding:2px 8px;letter-spacing:.03em;margin-left:6px;vertical-align:middle}
+.highlight{background:linear-gradient(135deg,#0f6e6c,#139593);color:#fff;border-radius:15px;padding:16px 18px;margin:14px 0}
+.highlight b{font-size:18px;display:block;margin-bottom:3px}
+.highlight span{font-size:13px;color:#d9f3ef}
+.skip{margin-top:12px}
+@media(max-width:670px){.progresslabel{padding:8px 18px 0}.cmpline{grid-template-columns:80px 1fr 80px}}
+
+/* v0.6 integración real: preservar tipografía, métricas y tarjetas del prototipo v0.4 */
+.wrap{display:block;max-width:850px;margin:24px auto;padding:0 16px}.workspace{width:100%}
+.content{padding:30px 35px 34px}.progresslabel{display:none}.bar{height:5px}
+.metricbar{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))!important}
+.clinicrow{border-top:1px solid var(--stroke);padding-top:11px;margin-top:11px}.clinicrow>.metricbar{margin:6px 0 0}
+.multiline{white-space:pre-line}.err{color:#b4232c}.err:empty{display:none}
+@media(max-width:670px){.wrap{margin:10px auto;padding:0 10px}.content{padding:23px 18px}.financegrid{grid-template-columns:1fr}.metricbar{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style></head><body><header><div class="top"><div class="brand"><div class="logo">A</div><div><strong>ALMA Match</strong><small>Tu plan. Tu comparación. Tu decisión.</small></div></div><span class="badge-demo">DEMO HACKATHON v0.6</span></div></header><div class="wrap"><main class="workspace"><div class="bar"><div id="prog"></div></div><div class="progresslabel" id="proglabel"></div><section class="content" id="content" aria-live="polite"></section></main></div><footer>Demostración técnica independiente de WordPress. Documentos de prueba sin información personal. Datos de extracción y coberturas pendientes de validación. No constituye oferta comercial ni asesoría médica.</footer><script>(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+const s={stage:0,age:'',isapre:'Esencial',loads:'',pactUF:'',income:'',payment:'',goal:'ambas',clinics:['Clínica Dávila','Clínica Indisa'],other:'',file:null,response:null};
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+const norm=x=>String(x??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const money=n=>new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(n||0);
+const formatThousands=v=>{const d=String(v??'').replace(/\D/g,'');return d?Number(d).toLocaleString('es-CL'):''};
+const digitValue=v=>Number(String(v||'').replace(/\D/g,''));
+const uf=n=>Number.isFinite(+n)&&n!==null?Number(n).toLocaleString('es-CL',{minimumFractionDigits:3,maximumFractionDigits:3})+' UF':'Pendiente';
+const BACK='<button id="back" type="button" class="ghost">Volver</button>';
+const NEXT=t=>'<button id="next" type="button" class="primary">'+esc(t||'Continuar')+' →</button>';
+const view=(title,lead,body,actions)=>`<div class="eyebrow">ALMA · Asesoría inteligente</div><h1 class="hero">${title}</h1><p class="lead">${lead}</p>${body}<p class="err" id="err" role="alert"></p><div class="actions">${actions||''}</div>`;
+const err=(msg,id)=>{if($('err'))$('err').textContent=msg;if(id&&$(id))$(id).focus()};
+function persist() {
+  if(s.stage===0){
+    s.age=$('age')?.value||'';s.isapre=$('isapre')?.value||'';s.loads=$('loads')?.value||'';
+    s.pactUF=$('pactUF')?.value||'';s.income=$('income')?.value||'';s.payment=$('payment')?.value||'';
+  }
+  if(s.stage===1){s.other=$('other')?.value||''}
+}
+function financePreview(){
+  const box=$('financePreview');if(!box)return;
+  let income=digitValue($('income')?.value),pact=Number(($('pactUF')?.value||'').replace(',','.'));
+  let seven=Math.round(Math.min(income*.07,6.3*41252.94));
+  box.innerHTML=`<div class="twoitems"><div><small>7 % estimado desde renta imponible</small><strong>${income?money(seven):'Pendiente'}</strong></div><div><small>Plan pactado</small><strong>${pact>0?uf(pact):'Pendiente'}</strong><small>${pact>0?'≈ '+money(pact*41252.94)+' · UF referencial 01/11/2026':''}</small></div></div><p class="tiny">Cálculo ilustrativo con tope imponible; el monto legal efectivo puede requerir revisión.</p>`;
+}
+function render(){
+ let body='',bar=s.stage===0?16:s.stage===1?43:s.stage===2?68:100;
+ $('prog').style.width=bar+'%';$('proglabel').textContent='';
+ if(s.stage===0){
+  const all=['Banmédica','Colmena','Consalud','Cruz Blanca','Esencial','Nueva Masvida','Vida Tres'];
+  body=view('Comencemos por tu situación','Solo necesitamos algunos datos para entender tu contrato y comparar otras isapres.',
+  `<div class="bubble"><b>¡Hola! Soy ALMA.</b> Te ayudaré a comparar coberturas reales. No necesitas conocer tu 7 %: lo calculamos desde tu renta imponible.</div>
+  <div class="financegrid"><div><label class="field" for="age">Edad del titular</label><input id="age" type="number" inputmode="numeric" min="0" max="110" class="input" value="${esc(s.age)}" placeholder="Ej. 42"></div><div><label class="field" for="isapre">Tu isapre actual</label><select id="isapre" class="input">${all.map(x=>`<option ${s.isapre===x?'selected':''} value="${esc(x)}">${esc(x)}</option>`).join('')}</select></div></div>
+  <label class="field" for="loads">Edades de tus cargas (si tienes)</label><input id="loads" class="input" value="${esc(s.loads)}" placeholder="Ej.: 12, 5 · o dejar vacío si no tienes cargas"><div class="financegrid"><div><label class="field" for="pactUF">Precio pactado actual (UF)</label><input id="pactUF" class="input" value="${esc(s.pactUF)}" placeholder="Ej.: 6,500" inputmode="decimal"></div><div><label class="field" for="income">Renta imponible mensual ($)</label><input id="income" class="input" inputmode="numeric" value="${esc(s.income)}" placeholder="1.500.000"></div></div>
+  <label class="field" for="payment">Total que pagas por tu plan hoy ($)</label><input id="payment" class="input" inputmode="numeric" value="${esc(s.payment)}" placeholder="Ej.: 280.000"><div class="finpreview" id="financePreview"></div>`,NEXT('Elegir clínicas'));
+ } else if(s.stage===1){
+  const clinics=['Clínica Dávila','Clínica Dávila Vespucio','Clínica Indisa','Clínica Santa María','Clínica RedSalud Santiago','Clínica RedSalud Providencia','Clínica Ciudad del Mar','Clínica Alemana de Temuco','Clínica Las Condes'];
+  body=view('¿Qué te interesa conservar o mejorar?','Puedes elegir varias clínicas. ALMA solo buscará opciones en otras isapres.',
+  `<div class="bubble">No hay una clínica mejor para todos: importa dónde quieres atenderte y qué estás dispuesto a cambiar.</div><div class="options">${clinics.map(c=>`<button class="chip ${s.clinics.includes(c)?'on':''}" type="button" data-clinic="${esc(c)}">${s.clinics.includes(c)?'✓ ':''}${esc(c)}</button>`).join('')}</div><label class="field" for="other">Otra clínica (opcional)</label><input class="input" id="other" value="${esc(s.other)}" placeholder="Nombre exacto de otra clínica"><label class="field">¿Qué buscas?</label><div class="options">${[['ambas','Ahorrar y mejorar cobertura'],['ahorro','Pagar menos'],['cobertura','Mejorar cobertura'],['clinicas','Más opciones de clínicas']].map(([k,v])=>`<button type="button" data-goal="${k}" class="chip ${s.goal===k?'on':''}">${v}</button>`).join('')}</div>`,BACK+NEXT('Revisar contrato'));
+ } else if(s.stage===2){
+  body=view('Sube tu plan actual','Muse Spark de Meta leerá el PDF para extraer las coberturas. También puedes ver una demostración ya analizada, sin gastar nuevos créditos.',
+  `<div class="bubble"><b>Privacidad:</b> utiliza solo contratos de prueba sin datos personales. El PDF se envía a Meta para su análisis y no se guarda en la Biblioteca de WordPress.</div>
+  <label class="file">Seleccionar contrato PDF<input type="file" id="file" accept="application/pdf,.pdf"></label><p class="tiny">PDF hasta 15 MB y 50 páginas. No usar documentos de clientes reales en esta demostración.</p><div class="twocol" style="margin-top:16px"><button type="button" class="primary" id="analyze">Analizar con Muse Spark</button><button type="button" class="ghost" id="demo">Ver demo ya analizada (sin llamada a Meta)</button></div><p class="err" id="operation" role="status"></p>`,BACK);
+ } else {
+  body=resultView(s.response);
+ }
+ $('content').innerHTML=body;
+ if(s.stage===0){
+   ['income','payment'].forEach(id=>{$(id).addEventListener('input',e=>{const elem=e.target;elem.value=formatThousands(elem.value);financePreview()})});
+   $('pactUF').addEventListener('input',financePreview);financePreview();
+ }
+ if(s.stage===1){
+   document.querySelectorAll('[data-clinic]').forEach(el=>el.addEventListener('click',()=>{s.other=$('other').value;const c=el.dataset.clinic;s.clinics=s.clinics.includes(c)?s.clinics.filter(x=>x!==c):[...s.clinics,c];render()}));
+   document.querySelectorAll('[data-goal]').forEach(el=>el.addEventListener('click',()=>{s.other=$('other').value;s.goal=el.dataset.goal;render()}));
+ }
+ if($('back'))$('back').onclick=()=>{persist();s.stage=Math.max(0,s.stage-1);render()};
+ if($('next'))$('next').onclick=()=>{
+   if(s.stage===0){persist();if(!s.age||+s.age<0||+s.age>110)return err('Ingresa una edad válida.','age');if(!s.isapre)return err('Selecciona una isapre.','isapre');if(digitValue(s.income)<=0)return err('Ingresa la renta imponible para calcular tu 7 %.','income');if(s.pactUF && !(+s.pactUF.replace(',','.')>0))return err('Escribe el pactado con coma decimal, por ejemplo 6,500.','pactUF');}
+   if(s.stage===1){persist();if(!s.clinics.length&&!s.other.trim())return err('Selecciona al menos una clínica o escribe otra.','other')}
+   s.stage++;render();window.scrollTo(0,0);
+ };
+ if(s.stage===2){$('analyze').onclick=()=>send(false);$('demo').onclick=()=>send(true);}
+ if(s.stage===3){$('restart').onclick=()=>{s.stage=0;s.response=null;render()}; const cb=$('contactConsent');if(cb)cb.onchange=()=>{$('contactMessage').textContent=cb.checked?'Esta es solo una demostración: no se envía información a ningún ejecutivo.':''};}
+}
+async function send(demo){
+ const file=$('file')?.files?.[0];
+ if(!demo&&!file)return err('Selecciona un PDF para analizar con Meta.');
+ const op=$('operation');op.textContent=demo?'Abriendo comparación ya analizada…':'Enviando contrato a Muse Spark…';
+ $('analyze').disabled=true;$('demo').disabled=true;
+ const fd=new FormData();fd.append('isapre_actual',s.isapre);fd.append('clinicas',JSON.stringify([...s.clinics,...(s.other?[s.other]:[])]));fd.append('objetivo',s.goal);
+ fd.append('renta_imponible',String(digitValue(s.income)));fd.append('pactado_uf',s.pactUF.replace(',','.'));fd.append('pago_actual',String(digitValue(s.payment)||''));
+ if(!demo)fd.append('pdf',file);
+ try{
+   const res=await fetch(demo?'/api/demo':'/api/analizar',{method:'POST',body:fd});const data=await res.json();
+   if(!res.ok)throw new Error(data.detail||'No se pudo analizar el contrato');
+   s.response=data;s.stage=3;render();window.scrollTo(0,0);
+ }catch(e){op.textContent='No se completó la operación: '+e.message;$('analyze').disabled=false;$('demo').disabled=false}
+}
+function metric(title,value){return `<div><small>${esc(title)}</small><strong>${esc(value)}</strong></div>`}
+function resultView(response){
+ const d=response?.resultado||{}, comp=response?.comparacion||{}, fin=response?.finanzas||{};
+ const textList=(data,cap=3)=>Array.isArray(data)?data.slice(0,cap).map(x=>`<p><b>Página ${esc(x.pagina_pdf??'s/d')}:</b> ${esc(x.descripcion??'Sin dato')}</p>`).join(''):'';
+ const precio=fin.pactado_uf?uf(fin.pactado_uf):'UF no informada';
+ const seven=fin.cotizacion_legal_estimada?.monto_clp_estimado;
+ const active=`<div class="currentcard"><div class="matchtop"><span class="tag">Tu plan actual</span><span class="state">${esc(d.estado_verificacion||'Pendiente de revisión')}</span></div><h2>${esc(d.nombre_plan||'Contrato analizado')}</h2><p>${esc(d.isapre||'Isapre no identificada')} · ${esc(d.codigo_plan||'Código no identificado')} · ${esc(d.modalidad||'Modalidad no identificada')}</p><div class="metricbar">${metric('Hospitalaria','Ver red y topes')}${metric('Ambulatoria','Según prestación')}${metric('Urgencias','Según modalidad')}${metric('Pactado actual',precio)}</div><p class="tiny">Pago mensual informado: ${fin.pago_actual_clp?money(fin.pago_actual_clp):'No informado'} · 7 % estimado: ${seven?money(seven):'Pendiente'}</p><details><summary>Ver coberturas y condiciones del contrato</summary><div class="detailcontent"><h4>Hospitalaria</h4>${textList(d.hospitalaria)}<h4>Ambulatoria</h4>${textList(d.ambulatoria)}<h4>Urgencia</h4>${textList(d.urgencia)}<h4>Clínicas</h4>${textList(d.clinicas_preferentes,5)}<h4>Topes y condiciones</h4>${textList(d.topes,6)}${textList(d.observaciones,4)}</div></details></div>`;
+ const cards=(comp.alternativas||[]).map((c,i)=>{
+   const matches=c.coincidencias.map(m=>`<div class="clinicrow"><b>${esc(m.clinica)}</b><div class="metricbar">${metric('Hospitalaria',m.hospitalaria!=null?m.hospitalaria+' %':'Por verificar')}${metric('Ambulatoria',m.ambulatoria!=null?m.ambulatoria+' %':'Por verificar')}</div></div>`).join('');
+   return `<article class="matchcard ${i===0?'featured':''}"><div class="matchtop"><span class="tag">Alternativa de otra isapre ${i+1}</span><span class="state">Coberturas pendientes de validar</span></div><h3>${esc(c.nombre)}</h3><p class="muted">${esc(c.isapre)} · ${esc(c.codigo)} · ${esc(c.modalidad)}</p>${matches}<div class="price"><strong>Precio final pendiente de cálculo</strong><small>No es posible confirmar ahorro sin tarifa, factores y GES.</small></div><details><summary>Ver urgencias y condiciones para comparar</summary><div class="detailcontent"><h4>Urgencias</h4><p>${esc(c.urgencia)}</p><h4>Hospitalaria</h4><p class="multiline">${esc(c.hospitalaria_resumen)}</p><h4>Ambulatoria</h4><p class="multiline">${esc(c.ambulatoria_resumen)}</p></div></details></article>`}).join('');
+ const intro=`<div class="eyebrow">ALMA · Comparación inteligente</div><h1 class="hero">Lo que encontró ALMA</h1><p class="lead">Comparación documental basada en el PDF y una muestra de otras isapres. Las diferencias deben contrastarse con los contratos completos.</p>`;
+ return intro+`<div class="bubble"><b>${response.demostracion_precargada?'Demostración con extracción previa de Meta':'Extracción nueva generada por Meta'}</b>. La IA no reemplaza la verificación documental. ${esc(comp.estado||'')}</div>`+active+
+ `<h2 class="choiceheading">Alternativas de otras isapres</h2>${comp.error?`<div class="warn">${esc(comp.error)}</div>`:''}${cards||'<p class="warn">No encontramos alternativas documentales con coincidencia exacta en las clínicas seleccionadas. No inventaremos una opción.</p>'}`+
+ `<div class="notice"><b>Sobre el precio:</b> ${esc(comp.sin_precios||'No se calcularon precios finales.')} ${esc(comp.mensaje_ahorro||'')}<p class="tiny">Los topes por evento y anuales no se comparan como si fueran equivalentes. No mostramos porcentajes como copagos reales.</p></div>`+
+ `<h3>¿Quieres que un ejecutivo revise la comparación?</h3><p class="muted">Este prototipo no envía datos ni contactos.</p><label class="checkboxLine"><input id="contactConsent" type="checkbox"><span>Me gustaría recibir una revisión comercial en una versión futura.</span></label><p class="tiny" id="contactMessage"></p><div class="actions"><button id="restart" class="ghost" type="button">Nueva comparación</button></div>`;
+}
+render();
+})();
+</script></body></html>
