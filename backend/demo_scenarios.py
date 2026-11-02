@@ -132,6 +132,12 @@ def synthetic_case(scenario):
         raise ValueError('Caso ficticio desconocido')
     verification=verify_document_claims(_extraction(),_pdf())
     comparison=_comparison(scenario,verification)
+    comparison['topes_visuales'] = [
+        {'tipo':'Hospitalaria','periodo':'anual','actual_uf':400,'alternativa_uf':450},
+        {'tipo':'Ambulatoria','periodo':'anual','actual_uf':60,'alternativa_uf':70},
+        {'tipo':'Urgencia','periodo':'evento','actual_uf':5,'alternativa_uf':6},
+    ] if comparison['alternativas'] else []
+    comparison['plan_actual'] = {'nombre':'Plan de prueba A','isapre':'Ficticia A','codigo':'DEMO001'}
     return {'resultado':_extraction(),'verificacion_documental':verification,
         'comparacion':comparison,'finanzas':{'pactado_uf':None,'pago_actual_clp':None,
                                             'cotizacion_legal_estimada':None},
