@@ -1,4 +1,4 @@
-name: Leer contrato real Esencial con Muse
+name: Leer contrato real Esencial con Muse (fuentes públicas)
 
 on:
   workflow_dispatch:
