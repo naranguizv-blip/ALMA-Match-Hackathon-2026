@@ -16,8 +16,8 @@ def test_demo_end_to_end():
     j=res.json()
     assert j['resultado']['codigo_plan']=='CS50400826'
     assert j['finanzas']['cotizacion_legal_estimada']['monto_clp_estimado']==105000
-    assert j['comparacion']['alternativas']
-    assert all(x['isapre']!='Esencial' for x in j['comparacion']['alternativas'])
+    assert j['comparacion']['alternativas']==[]
+    assert j['verificacion_documental']['aprobado_para_comparacion'] is False
 
 def test_demo_mismatch_is_blocked():
     r=client.post('/api/demo',data={'isapre_actual':'Banmédica','clinicas':json.dumps(['Clínica Indisa'])})
@@ -35,6 +35,8 @@ def test_real_pdf_with_mock_meta(monkeypatch):
     response=client.post('/api/analizar',data={'isapre_actual':'Esencial','clinicas':json.dumps(['Clínica Dávila'])},files={'pdf':('contrato.pdf',buf.getvalue(),'application/pdf')})
     assert response.status_code==200
     assert not response.json()['demostracion_precargada']
+    assert response.json()['comparacion']['alternativas']==[]
+    assert response.json()['verificacion_documental']['aprobado_para_comparacion'] is False
     assert response.json()['paginas_pdf']==1
 
 def test_ai_verification_never_assumed():

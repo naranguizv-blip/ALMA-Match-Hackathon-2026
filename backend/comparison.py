@@ -46,8 +46,9 @@ def parse_groups(text):
 
 
 def compare(current_isapre, requested_clinics, goal='ambas', actual_payment=None,
-            document_isapre=None):
-    catalog = json.loads((HERE / 'catalogo_demo.json').read_text(encoding='utf-8'))
+            document_isapre=None, catalog=None):
+    if catalog is None:
+        catalog = json.loads((HERE / 'catalogo_demo.json').read_text(encoding='utf-8'))
     current = norm(current_isapre)
     if not current:
         return {'alternativas':[], 'error':'Indica tu isapre actual para excluirla de las alternativas.'}
@@ -59,6 +60,17 @@ def compare(current_isapre, requested_clinics, goal='ambas', actual_payment=None
     options = []
     for candidate in catalog:
         if norm(candidate['isapre']) == current:
+            continue
+        # Figurar en catálogo oficial no implica coberturas y topes comprobados.
+        if not (candidate.get('comercializacion_verificada') is True
+                and candidate.get('coberturas_verificadas') is True
+                and candidate.get('topes_verificados') is True
+                and candidate.get('revisado_para_comparacion') is True):
+            continue
+        if candidate.get('tipo_plan') != 'Individual' or not candidate.get('periodo_comercializacion'):
+            continue
+        if not all(str(candidate.get(k) or '').strip() for k in
+                   ('hospitalaria','ambulatoria','urgencia','topes')):
             continue
         h = parse_groups(candidate['hospitalaria'])
         a = parse_groups(candidate['ambulatoria'])
@@ -91,7 +103,8 @@ def compare(current_isapre, requested_clinics, goal='ambas', actual_payment=None
         'mensaje_ahorro':'Sin precios finales verificados no se puede asegurar que una alternativa cueste menos de lo que pagas.' if goal in ('ahorro','ambas') else None,
         'isapre_excluida':current_isapre,
         'catalogo_prueba':len(catalog),
-        'estado':'Comparación ilustrativa basada en extracciones de documentos; pendiente de revisión.'}
+        'estado':('Comparación documental preliminar, no cotización ni equivalencia acreditada.' if options else 'Sin alternativas documentales verificadas para mostrar.'),
+        'candidatos_rechazados_por_verificacion': len(catalog)-len([x for x in catalog if norm(x.get('isapre'))==current]) - len(options)}
     return result
 
 
