@@ -43,3 +43,18 @@ def test_endpoint_caso_historico():
     r=TestClient(app).get("/api/caso-historico")
     assert r.status_code == 200
     assert len(r.json()["alternativas"])==4
+
+def test_uf_se_presenta_como_estimacion_y_alternativas_tienen_precio_documentado():
+    d=historical_comparison()
+    assert d['plan_actual']['pago_mensual_uf_aproximado']=='10.600'
+    assert d['plan_actual']['pago_pactado_uf_exactamente_documentado'] is None
+    assert [x['precio_uf'] for x in d['alternativas']]==['6.790','7.798','8.374','9.202']
+    assert [x['ahorro_mensual_potencial_uf'] for x in d['alternativas']]==['3.810','2.802','2.226','1.398']
+    assert [x['ahorro_anual_potencial_uf'] for x in d['alternativas']]==['45.717','33.621','26.709','16.773']
+
+def test_topes_de_este_pdf_y_no_otro_contrato():
+    d=historical_comparison()
+    assert d['plan_actual']['tope_dia_cama_uf']=='7.40'
+    assert d['plan_actual']['tope_medicamentos_hospitalarios_uf']=='15.00'
+    assert d['plan_actual']['tope_materiales_insumos_uf']=='18.00'
+    assert any('15 UF' in x for x in d['observaciones'])
