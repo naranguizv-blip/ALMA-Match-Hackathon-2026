@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: alma-match-hackathon
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: META_DEMO_ALLOWED
+        value: "0"
+      - key: META_DEMO_MAX_CALLS
+        value: "8"
+      - key: MODEL_NAME
+        value: muse-spark-1.3
+      - key: MODEL_API_KEY
+        sync: false
