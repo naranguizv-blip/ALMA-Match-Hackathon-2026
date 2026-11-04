@@ -9,6 +9,9 @@ certificar equivalencia, contratación o disponibilidad actual.
 from decimal import Decimal
 
 MONTO_PAGADO_DECLARADO_CLP = 433_000
+# Valor UF inferido SOLO para la conversión ilustrativa desde los pares UF/CLP
+# de la propuesta, no valor oficial ni valor contractual del plan de origen.
+UF_IMPLÍCITA_EN_PROPUESTA_CLP = Decimal('40850')
 DESGLOSE_CLP = (377_000, 56_300)
 PROPOSALS = (
     {
@@ -73,9 +76,13 @@ def historical_comparison():
     alternativas = []
     for source in PROPOSALS:
         delta = MONTO_PAGADO_DECLARADO_CLP - source["precio_clp"]
+        pago_actual_uf_estimado = Decimal(MONTO_PAGADO_DECLARADO_CLP) / UF_IMPLÍCITA_EN_PROPUESTA_CLP
+        ahorro_uf = pago_actual_uf_estimado - Decimal(source["precio_uf"])
         alternativas.append({
             **source,
             "ahorro_mensual_potencial_clp": delta,
+            "ahorro_mensual_potencial_uf": format(ahorro_uf.quantize(Decimal("0.001")), ".3f"),
+            "ahorro_anual_potencial_uf": format((ahorro_uf * 12).quantize(Decimal("0.001")), ".3f"),
             "ahorro_anual_potencial_clp": delta * 12,
             "porcentaje_ahorro_potencial": round(delta * 100 / MONTO_PAGADO_DECLARADO_CLP, 1),
             "ahorro_confirmado": False,
@@ -92,10 +99,14 @@ def historical_comparison():
         "plan_actual": {
             "isapre": "Nueva Masvida",
             "pago_informado_clp": MONTO_PAGADO_DECLARADO_CLP,
+            "pago_mensual_uf_aproximado": format((Decimal(MONTO_PAGADO_DECLARADO_CLP) / UF_IMPLÍCITA_EN_PROPUESTA_CLP).quantize(Decimal("0.001")), ".3f"),
+            "uf_referencial_clp": str(UF_IMPLÍCITA_EN_PROPUESTA_CLP),
+            "uf_referencial_origen": "Valor deducido de los pares UF/CLP de la propuesta histórica, no valor oficial fechado.",
+            "pago_pactado_uf_exactamente_documentado": None,
             "desglose_informado_clp": list(DESGLOSE_CLP),
             "suma_desglose_clp": sum(DESGLOSE_CLP),
             "tope_dia_cama_uf": "7.40",
-            "tope_medicamentos_hospitalarios_uf": "45.00",
+            "tope_medicamentos_hospitalarios_uf": "15.00",
             "tope_materiales_insumos_uf": "18.00",
             "fuente": "Propuesta histórica, página 1; corresponde a la descripción del plan de origen, no a una certificación vigente.",
         },
@@ -105,6 +116,8 @@ def historical_comparison():
             "Estos precios y ahorros son de una propuesta histórica, NO una oferta vigente ni prueba de cambio o ahorro efectivamente obtenido.",
             "Las coberturas hospitalarias, ambulatorias y de urgencia varían entre los planes. No se ha demostrado que sean idénticas al plan actual.",
             "El índice por Clínica Dávila no garantiza la red, los topes por prestación, médicos staff ni los convenios vigentes.",
+            "Pago actual en UF estimado usando 40.850 CLP/UF implícitos en esta propuesta; el contrato de origen no acredita UF pactadas exactas.",
+            "Tope de medicamentos hospitalarios del plan de origen: 15 UF por evento en el PDF de este caso; no confundir con otro contrato que mencionaba 45 UF.",
             "Meta Muse Spark se probó en otro contrato por separado; este caso demuestra cálculo y presentación usando datos transcritos del PDF.",
         ],
         "hasta_tres_recomendaciones_verificadas": [],
