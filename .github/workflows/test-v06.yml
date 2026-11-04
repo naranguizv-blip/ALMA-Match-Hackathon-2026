@@ -1,5 +1,8 @@
 name: Pruebas ALMA Match v0.6
 on:
+  push:
+    branches:
+      - desarrollo/demo-final-v0.8
   pull_request:
     branches:
       - main
