@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pypdf import PdfReader
-from .comparison import compare, legal_7_estimate
+from .comparison import compare, legal_7_estimate, norm
 from .meta_client import analyze_pdf
 from .verification import verify_document_claims
 from .demo_scenarios import synthetic_case
@@ -199,3 +199,121 @@ def quote_example(payload: dict):
 def client_demo():
     """Recorrido de principio a fin sin datos personales ni solicitudes de IA."""
     return FileResponse(ROOT/'docs'/'cliente.html',media_type='text/html')
+
+
+# Recorrido del jurado: carga auténtica + Muse Spark + candidatos documentales.
+# Impone un presupuesto operativo de llamadas por proceso, NO una garantía de
+# límite de facturación. El despliegue debe tener controles adicionales.
+from fastapi import Request
+from threading import Lock
+from .judge_demo import candidate_review_options
+import os
+from decimal import Decimal, InvalidOperation
+
+_demo_calls=0
+_demo_lock=Lock()
+
+
+@app.get('/api/estado-jurado')
+def judge_status():
+    enabled=(os.environ.get('META_DEMO_ALLOWED')=='1' and bool(os.environ.get('MODEL_API_KEY')))
+    return {
+        'meta_disponible':enabled,
+        'modo':'PDF real con Muse Spark' if enabled else 'Solo caso precargado y ficticio',
+        'precio_de_otra_persona_no_es_cotizacion':True,
+        'nota':'Para subir PDFs nuevos debe existir backend FastAPI, autorización y clave en el servidor.'
+    }
+
+
+@app.post('/api/comparar-pdf-jurado')
+async def judge_pdf(
+    request: Request,
+    pdf: UploadFile=File(...),
+    isapre_actual: str=Form(...),
+    clinicas: str=Form(...),
+    pago_actual_uf: str=Form(''),
+):
+    """Ejecuta Meta para un PDF nuevo: extrae, revisa citas y devuelve candidatos.
+
+    No genera cotizaciones ni ahorros de una composición familiar desconocida.
+    No guarda el documento en el disco y jamás devuelve contenido base64.
+    """
+    global _demo_calls
+    if os.environ.get('META_DEMO_ALLOWED')!='1':
+        raise HTTPException(503,'La lectura Meta no está activada en este servidor.')
+    if not os.environ.get('MODEL_API_KEY'):
+        raise HTTPException(503,'Falta la credencial Meta configurada en el servidor.')
+    if not (pdf.filename or '').lower().endswith('.pdf'):
+        raise HTTPException(400,'Solo se admiten contratos PDF.')
+    try:
+        target_clinics=json.loads(clinicas)
+    except (TypeError,ValueError):
+        raise HTTPException(400,'Clínicas no válidas.')
+    if not isinstance(target_clinics,list) or not 1<=len(target_clinics)<=8:
+        raise HTTPException(400,'Debes seleccionar entre una y ocho clínicas.')
+    if not all(isinstance(x,str) and 2<=len(x)<=100 for x in target_clinics):
+        raise HTTPException(400,'Nombre de clínica inválido.')
+    if not isinstance(isapre_actual,str) or not 2<=len(isapre_actual)<=60:
+        raise HTTPException(400,'Selecciona la isapre actual.')
+    amount=None
+    if pago_actual_uf.strip():
+        try:
+            amount=Decimal(pago_actual_uf.strip().replace(',','.'))
+        except InvalidOperation:
+            raise HTTPException(400,'Pago actual UF inválido.')
+        if not amount.is_finite() or not Decimal('0')<amount<Decimal('150'):
+            raise HTTPException(400,'Pago actual UF fuera de rango.')
+    raw=await pdf.read(6*1024*1024+1)
+    await pdf.close()
+    if len(raw)>6*1024*1024:
+        raise HTTPException(413,'El PDF supera el límite de 6 MB.')
+    if not raw.startswith(b'%PDF-'):
+        raise HTTPException(400,'El archivo no es un PDF válido.')
+    try:
+        reader=PdfReader(BytesIO(raw),strict=False)
+        pages=len(reader.pages)
+        if not 1<=pages<=15:
+            raise ValueError('Cantidad de páginas fuera de rango')
+    except Exception:
+        raise HTTPException(400,'PDF ilegible o de más de 15 páginas.')
+    # El control global reduce uso accidental, pero NO reemplaza cuotas del proveedor.
+    try:
+        cap=max(1,min(int(os.environ.get('META_DEMO_MAX_CALLS','8')),30))
+    except ValueError:
+        cap=8
+    with _demo_lock:
+        if _demo_calls>=cap:
+            raise HTTPException(429,'Se alcanzó el máximo de análisis de esta demostración.')
+        _demo_calls+=1
+    try:
+        extracted=analyze_pdf(raw)
+    except (RuntimeError,ValueError):
+        raise HTTPException(502,'Meta no pudo completar la lectura. No se han generado recomendaciones.')
+    ver=verify_document_claims(extracted,raw)
+    if norm(extracted.get('isapre'))!=norm(isapre_actual):
+        ver['aprobado_para_comparacion']=False
+        ver.setdefault('motivos',[]).append('La isapre del contrato no coincide con la seleccionada')
+    candidates=candidate_review_options(isapre_actual,target_clinics)
+    return {
+        'modo':'analisis_meta_real',
+        'modelo_meta':os.environ.get('MODEL_NAME','muse-spark-1.3'),
+        'contrato':extracted,
+        'verificacion_documental':ver,
+        'paginas_pdf':pages,
+        'opciones_para_revisar':candidates,
+        'total_opciones':len(candidates),
+        'pago_actual_uf_informado':str(amount) if amount is not None else None,
+        'ahorro_verificado':False,
+        'precios_personalizados_disponibles':False,
+        'estado':'informativo_sin_equivalencia_certificada',
+        'aviso':('Se leyó tu documento con Muse Spark. Las alternativas son referencias para revisar '
+                'y NO están cotizadas para tus edades ni garantizan mejor cobertura. '
+                'No calculamos ahorro hasta validar precios, red, factores, GES y topes.'),
+        'privacidad':'El documento no se guarda en este servidor. Para analizarlo fue enviado a Meta Model API.'
+    }
+
+
+@app.get('/prueba.html')
+def fictional_example_page():
+    """Interfaz alternativa de caso ficticio sin llamada a Meta."""
+    return FileResponse(ROOT/'docs'/'prueba.html',media_type='text/html')

@@ -108,6 +108,8 @@ def historical_comparison():
             "tope_dia_cama_uf": "7.40",
             "tope_medicamentos_hospitalarios_uf": "15.00",
             "tope_materiales_insumos_uf": "18.00",
+            "tope_protesis_ortesis_anual_uf": "11.88",
+            "fuente_protesis_ortesis": "Propuesta original, página 1: prótesis, órtesis y osteosíntesis, tope máximo por beneficiario/año.",
             "fuente": "Propuesta histórica, página 1; corresponde a la descripción del plan de origen, no a una certificación vigente.",
         },
         "alternativas": alternativas,
