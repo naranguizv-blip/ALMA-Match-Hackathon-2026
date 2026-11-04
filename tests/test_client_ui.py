@@ -14,7 +14,7 @@ def test_cargas_se_piden_una_a_una_y_pesos_se_formatean():
     assert 'id="loadCount"' in HTML
     assert 'id="loadAges"' in HTML
     assert 'Edad de la carga ' in HTML
-    assert 'className="loadAgeInput"' in HTML
+    assert "input.className='loadAgeInput'" in HTML
     assert 'id="income"' in HTML
     assert "fmtThousands(digits)" in HTML
     assert "2.000.000" in HTML
@@ -49,7 +49,7 @@ def test_whatsapp_requiere_consentimiento_y_no_transmite_salud():
     assert 'no mis datos de salud ni mi renta' in HTML.lower()
 
 def test_carga_pdf_no_finge_analisis_meta():
-    assert 'Subir un contrato PDF y analizarlo con Muse Spark' in HTML
+    assert 'Subir un PDF · disponible con servidor Muse Spark' in HTML
     assert '/api/comparar-pdf-jurado' in HTML
-    assert 'no se hará pasar una carga local por un análisis real' in HTML
+    assert 'Prototipo con datos reales; el próximo paso es Muse Spark' in HTML
     assert 'sin tope' in HTML.lower()
