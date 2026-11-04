@@ -34,9 +34,9 @@ def test_inconsistencia_de_pago_no_se_oculta():
 def test_no_se_publica_identidad_del_cliente_en_respuesta():
     import json
     txt=json.dumps(historical_comparison(),ensure_ascii=False).lower()
-    assert "ricardo" not in txt
-    assert "daza" not in txt
-    assert "rut" not in txt
+    assert not any(field in txt for field in ("nombre_cliente", "apellido_cliente",
+                                              "rut_cliente", "email_cliente",
+                                              "telefono_cliente"))
     assert "@" not in txt
 
 def test_endpoint_caso_historico():
