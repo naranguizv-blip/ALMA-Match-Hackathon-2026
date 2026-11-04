@@ -35,24 +35,49 @@ table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:left
 .info{font-size:12px;padding:10px;background:#edf6f5;border-radius:9px}
 footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
 @media(max-width:710px){.twocol,.threecol,.cards,.compare{grid-template-columns:1fr}.panel{padding:16px}.money{font-size:25px}.steps span{font-size:10px}}
+
+
+/* Ajustes de experiencia: evitar pasos técnicos y destacar ahorro/coberturas */
+.loadAges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:7px}
+.loadAge label{margin:3px 0;color:#47626b;font-size:12px}
+.loadAge input{min-height:42px}
+.consentWrap{margin-top:15px;background:#f1f7f6;border-radius:12px;padding:10px 14px}
+.consentLabel{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.5;font-weight:500}
+.consentLabel input{width:18px;height:18px;min-height:auto;margin-top:2px;flex:0 0 18px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.heroSaving{background:linear-gradient(120deg,#e3f6ed,#f3faf8);padding:19px;border-radius:16px;margin:15px 0;border:1px solid #c6ead9}
+.heroSaving .lead{color:#006950;font-size:13px;font-weight:800}
+.heroSaving .amount{color:#006f50;font-size:clamp(31px,5vw,47px);font-weight:900;line-height:1.15;letter-spacing:-.04em}
+.heroSaving .sub{font-size:13px;color:#466d65}
+.comparisonList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.comparisonCard{border:1px solid #d4e7e1;padding:17px;border-radius:16px;min-width:0}
+.comparisonCard.featured{border:2px solid #068d7e;background:#fafffe}
+.comparisonCard .cost{font-size:26px;font-weight:850;white-space:nowrap}
+.coverageRow{border-bottom:1px solid #e6eeee;padding:11px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.coverageRow b{display:block;font-size:16px}
+.coverageRow small{font-size:12px}
+.sectionHeader{margin:18px 0 10px}
+@media(max-width:710px){.comparisonList{grid-template-columns:1fr}.loadAges{grid-template-columns:1fr}.heroSaving .amount{font-size:33px}}
 </style></head>
 <body><header><div class="in"><div class="logo">A</div><div><b>ALMA Match</b><small>Tu plan. Tu comparación. Tu decisión.</small></div></div></header>
 <main>
 <div class="eyebrow">Prototipo Hackathon Meta 2026 · recorrido del cliente</div>
 <h1>Descubre qué estás pagando y qué alternativas tienes.</h1>
-<p class="intro">Empieza desde cero o usa un caso histórico anonimizado. Los precios son reales de una propuesta anterior; la interpretación de equivalencias y la comercialización actual necesitan revisión. Los datos que escribas se quedan en esta pantalla.</p>
-<div class="steps" id="progress"><span>1 · Tus datos</span><span>2 · Preferencias</span><span>3 · Contrato</span><span>4 · Comparación</span><span>5 · Precio nuevo</span></div>
+<p class="intro">Sube tu plan o comienza con un caso de ejemplo. ALMA compara <strong>coberturas reales, clínicas, topes efectivos y ahorro potencial</strong>, no solamente porcentajes. Para la demostración utilizamos una propuesta histórica anonimizada.</p>
+<div class="steps" id="progress"><span>1 · Tus datos</span><span>2 · Tus preferencias</span><span>3 · Tu contrato</span><span>4 · Tu comparación</span></div>
 <section class="panel step on" id="step0">
  <h2>Hola, ¿qué necesitas comparar?</h2>
- <div class="banner">Para el video del concurso puedes pulsar <b>«Cargar caso de demostración»</b>: rellena datos de ejemplo sin identificar al cliente original.</div>
- <div class="btnrow"><button class="btn ghost" id="autofill">Cargar caso de demostración</button></div>
+ <div class="banner">¿Quieres probarlo rápido? <b>«Usar caso de ejemplo»</b> completa datos ficticios; el contrato y los precios mostrados corresponden a una propuesta histórica anonimizada.</div>
+ <div class="btnrow"><button class="btn ghost" id="autofill">Usar caso de ejemplo</button></div>
  <div class="twocol">
   <div><label for="name">Nombre o alias</label><input id="name" placeholder="Ej.: Cliente de prueba" maxlength="60"></div>
   <div><label for="age">Edad del titular</label><input id="age" type="number" min="0" max="110" placeholder="Ej.: 42"></div>
  </div>
  <div class="twocol">
-  <div><label for="loads">Edades de las cargas</label><input id="loads" placeholder="Ej.: 15, 7 · dejar vacío si no hay"></div>
-  <div><label for="income">Renta imponible mensual ($)</label><input id="income" inputmode="numeric" placeholder="Ej.: 2.000.000"></div>
+  <div><label for="loadCount">¿Cuántas cargas tienes?</label><select id="loadCount" aria-label="Cantidad de cargas">
+<option value="0">Sin cargas</option><option value="1">1 carga</option><option value="2">2 cargas</option><option value="3">3 cargas</option><option value="4">4 cargas</option><option value="5">5 cargas</option><option value="6">6 cargas</option>
+</select><div id="loadAges" class="loadAges" aria-live="polite"></div></div>
+  <div><label for="income">Renta imponible mensual ($)</label><input id="income" type="text" inputmode="numeric" autocomplete="off" placeholder="Ej.: 2.000.000" aria-describedby="incomeHint"><small id="incomeHint">En pesos, con puntos de miles automáticos.</small></div>
  </div>
  <p class="hint">Los datos de prueba del formulario son ficticios; no corresponden necesariamente a la edad, renta o cargas del caso comercial histórico.</p>
  <div class="btnrow"><button class="btn" id="next0">Continuar →</button></div>
@@ -64,7 +89,7 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
   <div><label for="clinic">Clínica imprescindible</label><select id="clinic"><option value="davila">Clínica Dávila / Dávila Vespucio</option><option value="santamaria">Clínica Santa María</option><option value="otra">Otra (requiere verificar red)</option></select></div>
  </div>
  <div class="twocol">
-  <div><label for="pay">¿Cuánto pagas actualmente? (UF aproximadas)</label><input id="pay" inputmode="decimal" value="10,600"></div>
+  <div><label for="pay">¿Cuánto pagas actualmente? (UF)</label><input id="pay" inputmode="decimal" value="10,600"></div>
   <div><label for="goal">¿Qué priorizas?</label><select id="goal"><option value="ambas">Ahorrar y mejorar topes</option><option value="ahorro">Menor precio</option><option value="topes">Mejorar límites de cobertura</option></select></div>
  </div>
  <p class="hint">Para el caso real anonimizado, 10,600 UF es una aproximación a partir de $433.000 informados y la UF implícita en la propuesta antigua; no es el precio pactado exacto en UF.</p>
@@ -74,9 +99,9 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
  <h2>Selecciona tu plan actual</h2>
  <label class="opt"><input type="radio" name="mode" value="demo" checked> Usar caso real anonimizado: Nueva Masvida → Consalud</label>
  <p class="hint">El sistema utiliza únicamente los datos no identificatorios transcritos de una propuesta comercial histórica. Incluye un contrato de origen con 100 % nominal hospitalario sujeto a topes y cuatro propuestas con precios finales cotizados en UF.</p>
- <label class="opt"><input type="radio" name="mode" value="upload"> Tengo otro contrato PDF</label>
+ <label class="opt"><input type="radio" name="mode" value="upload"> Quiero subir mi contrato PDF</label>
  <input id="file" type="file" accept=".pdf,application/pdf">
- <div class="banner warn">En esta versión web sin servidor, los PDF distintos del ejemplo <b>no se analizan automáticamente</b>. La API real de Muse Spark existe en el backend de ALMA Match, pero necesita ejecución de servidor y autorización de uso. No simulamos su lectura.</div>
+ <div class="banner warn" id="pdfLimit">La demo descargable usa un caso precargado. Un PDF diferente requiere el servidor con Muse Spark activado; <b>no se hará pasar una carga local por un análisis real</b>.</div>
  <details><summary>¿Qué sabemos del contrato actual precargado?</summary><p>Prestaciones hospitalarias nominales 100 % con topes, entre ellos día cama 7,4 UF, medicamentos hospitalarios 15 UF y materiales 18 UF, según la primera página de la propuesta histórica. Estos topes deben contrastarse por prestación con las alternativas, no solo por el porcentaje.</p></details>
  <div class="btnrow"><button class="btn ghost back" data-go="1">Volver</button><button class="btn" id="next2">Analizar caso precargado →</button></div>
 </section>
@@ -91,23 +116,9 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
  <h3 style="margin-top:22px">Opciones con precio documentado</h3>
  <div id="cards" class="cards"></div>
  <details><summary>Ver comparación específica de coberturas y topes</summary><div class="scroll"><table><thead><tr><th>Condición</th><th>Plan actual</th><th>Life Focus 6 26 (Dávila)</th></tr></thead><tbody><tr><td>Hospitalaria</td><td>100 % nominal, con tope por prestación</td><td>80 % sin tope para prestaciones preferentes indicadas en la propuesta</td></tr><tr><td>Día cama</td><td>7,4 UF por prestación</td><td>Condición preferente sujeta a red, médicos staff y habitación individual</td></tr><tr><td>Medicamentos hospitalarios</td><td>15 UF por evento</td><td>Revisar topes específicos del contrato alternativo</td></tr><tr><td>Urgencia</td><td>Revisar reglas específicas</td><td>Tabla de urgencia Dávila, copagos por tipo de atención y condiciones</td></tr></tbody></table></div></details>
- <p class="status">Las cuatro tarifas proceden de la propuesta comercial histórica y corresponden a su composición original. <b>Si modificas edad, cargas o renta, no se recalculan esas ofertas antiguas</b>. Para obtener una cotización NUEVA usa el simulador siguiente con un precio BASE acreditado. Tampoco afirmamos que el ahorro haya sido contratado.</p>
- <div class="btnrow"><button class="btn ghost back" data-go="2">Volver</button><button class="btn" id="next3">Ver cómo se calcula un precio nuevo →</button></div>
-</section>
-<section class="panel step" id="step4">
- <div class="eyebrow">Simulador independiente · Parámetros oficiales fechados</div><h2>Precio nuevo: factores + GES + UF</h2>
- <div class="banner"><b>UF del 04/11/2026: $41.268,88.</b> GES 90 de Consalud: 0,731 UF por beneficiario. Los otros valores GES cambian según isapre. <b>Esta es una simulación educativa con un precio base ficticio</b>; no duplica los componentes de las ofertas históricas.</div>
- <div class="twocol">
-  <div><label for="base">Precio BASE de ejemplo (UF)</label><input id="base" value="3,500" inputmode="decimal"></div>
-  <div><label for="quoteIsapre">Isapre para simular</label><select id="quoteIsapre"><option>Consalud</option><option>Banmédica</option><option>Colmena</option><option>Cruz Blanca</option><option>Esencial</option><option>Nueva Masvida</option><option>Vida Tres</option></select></div>
- </div>
- <p class="hint">Edad y cargas se toman del formulario inicial. Si no ingresaste datos, la simulación no puede calcular un precio.</p>
- <div class="btnrow"><button class="btn" id="simulate">Simular precio nuevo</button><button class="btn ghost back" data-go="3">Volver</button></div>
- <div id="simulation" class="panel" style="margin-top:15px;display:none"></div>
- <details><summary>Consultar tabla de factores completa</summary><div id="tfuTable" class="scroll"></div></details>
- <details><summary>Consultar GES por isapre y fuentes</summary><div id="gesTable" class="scroll"></div>
-  <p class="sources"><a href="https://www.sii.cl/valores_y_fechas/uf/uf2026.htm" target="_blank" rel="noopener">UF SII</a> · <a href="https://www.nuevamasvida.cl/leycorta-2/" target="_blank" rel="noopener">Tabla TFU</a> · <a href="https://www.superdesalud.gob.cl/noticias/2025/12/por-primera-vez-la-superintendencia-de-salud-verifica-lo-que-las-isapres-quieren-cobrar-por-el-ges-y-corrige-excesos/" target="_blank" rel="noopener">GES Superintendencia</a></p>
- </details>
+ <p class="status">Estos son precios de una propuesta comercial histórica, no una cotización actual para cualquier edad o carga. ALMA calcula factores, GES y 7 % internamente cuando dispone de tarifas base verificadas; <b>no suma esos componentes otra vez a precios finales ya cotizados</b>. La comparación de prestaciones requiere revisar condiciones de la red.</p>
+ <div class="consentWrap"><label class="consentLabel"><input type="checkbox" id="consent"> Quiero abrir WhatsApp para solicitar una revisión personalizada. Solo se enviará el nombre del plan que elija; <b>no se enviarán mis datos de salud ni mis ingresos</b>.</label><p class="hint">El contacto se abre con Mejora Isapre; la asignación automática a la ejecutiva de cada isapre aún no está configurada.</p></div>
+<div class="btnrow"><button class="btn ghost back" data-go="2">Volver</button><button class="btn under" id="contact" type="button" disabled>Solicitar revisión por WhatsApp</button></div>
 </section>
 <footer>ALMA Match · Prototipo experimental para Meta Hackathon. Datos del formulario solo en memoria del navegador; no se transfieren. Caso histórico anonimizado, parámetros fechados, sin garantía de contratación.</footer>
 </main>
