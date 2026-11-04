@@ -1,0 +1,215 @@
+<!doctype html><html lang="es-CL"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALMA Match | Iniciar una comparación</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#19373e;background:#f3f7f7;--teal:#008d83;--line:#d9e8e6;--navy:#10323f}
+*{box-sizing:border-box}body{margin:0;padding-bottom:40px}header{background:var(--navy);color:white;padding:17px 22px}
+header .in{max-width:1000px;margin:auto;display:flex;gap:12px;align-items:center}header b{font-size:21px}
+.logo{width:42px;height:42px;display:grid;place-items:center;background:#00a397;color:white;border-radius:12px;font-weight:900;font-size:24px}
+header small{display:block;color:#afd6d5;font-size:12px}main{max-width:1000px;margin:0 auto;padding:22px 16px}
+h1{font-size:clamp(26px,5vw,37px);line-height:1.14;margin:8px 0}h2{font-size:21px;margin:0 0 11px}
+h3{font-size:16px;margin:0 0 9px}p{line-height:1.5;margin:8px 0 13px}
+.muted,small{color:#607780}.intro{font-size:14px;color:#59727a}.eyebrow{color:#008579;letter-spacing:.12em;font-size:11px;font-weight:900;text-transform:uppercase}
+.steps{display:flex;gap:7px;margin:19px 0 13px;flex-wrap:wrap}.steps span{background:#e1edeb;color:#60767b;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:750}
+.steps .active{background:#0b827b;color:white}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:21px;margin:12px 0;box-shadow:0 3px 19px #10354108}
+.step{display:none}.step.on{display:block}
+label{display:block;font-size:13px;font-weight:750;margin:13px 0 5px}
+input,select{background:#fff;color:#1b3941;border:1px solid #bccfcc;border-radius:11px;padding:11px 12px;min-height:44px;font:inherit;width:100%}
+.twocol,.threecol{display:grid;grid-template-columns:1fr 1fr;gap:13px}.threecol{grid-template-columns:repeat(3,1fr)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:19px}.btn{border:0;background:var(--teal);color:white;border-radius:12px;font:inherit;font-weight:750;padding:12px 18px;cursor:pointer}
+.btn.ghost{background:#e7f2ef;color:#006b65}.btn.under{background:#102f3a}.btn:focus-visible{outline:3px solid #facd64;outline-offset:2px}
+.banner{padding:13px 15px;border-radius:12px;background:#eaf7f4;border-left:4px solid #08a293;font-size:13px}
+.banner.warn{background:#fff4e5;border-left-color:#dfac50}.hint{font-size:12px;color:#59727b;margin-top:8px}
+.opt{padding:12px;border:1px solid #cddfdd;border-radius:12px;cursor:pointer;margin:8px 0}
+.opt input{width:auto;margin-right:7px;min-height:auto}.price{font-weight:850;font-size:26px;letter-spacing:-.025em}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{padding:16px;border:1px solid #d4e5e3;border-radius:15px;background:white;min-width:0}
+.card.highlight{border:2px solid #008e83}.pill{font-size:10px;font-weight:850;background:#e6f5f0;color:#0a7569;border-radius:50px;padding:5px 8px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:13px}.compare .card{padding:19px}
+.money{font-size:27px;font-weight:850;letter-spacing:-.035em;white-space:nowrap}.saved{color:#087e57;font-size:22px;font-weight:850}
+.bar{height:10px;border-radius:10px;background:#e2eeee;overflow:hidden;margin:4px 0}.bar span{display:block;background:#0c9e8f;height:100%;border-radius:10px}
+details{margin-top:12px;border-top:1px solid #e5edeb;padding-top:9px}summary{cursor:pointer;color:#00796f;font-weight:750;font-size:13px}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #e7eeee;font-size:13px}th{background:#eff6f5;font-size:12px}
+.scroll{overflow-x:auto}.scroll table{min-width:430px}
+.result{font-size:15px}.result b{font-size:16px}.status{background:#fef5e8;border-radius:11px;padding:12px;color:#74582b;font-size:13px}
+.sources a{font-size:12px;color:#007a71}
+.info{font-size:12px;padding:10px;background:#edf6f5;border-radius:9px}
+footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
+@media(max-width:710px){.twocol,.threecol,.cards,.compare{grid-template-columns:1fr}.panel{padding:16px}.money{font-size:25px}.steps span{font-size:10px}}
+</style></head>
+<body><header><div class="in"><div class="logo">A</div><div><b>ALMA Match</b><small>Tu plan. Tu comparación. Tu decisión.</small></div></div></header>
+<main>
+<div class="eyebrow">Prototipo Hackathon Meta 2026 · recorrido del cliente</div>
+<h1>Descubre qué estás pagando y qué alternativas tienes.</h1>
+<p class="intro">Empieza desde cero o usa un caso histórico anonimizado. Los precios son reales de una propuesta anterior; la interpretación de equivalencias y la comercialización actual necesitan revisión. Los datos que escribas se quedan en esta pantalla.</p>
+<div class="steps" id="progress"><span>1 · Tus datos</span><span>2 · Preferencias</span><span>3 · Contrato</span><span>4 · Comparación</span><span>5 · Precio nuevo</span></div>
+<section class="panel step on" id="step0">
+ <h2>Hola, ¿qué necesitas comparar?</h2>
+ <div class="banner">Para el video del concurso puedes pulsar <b>«Cargar caso de demostración»</b>: rellena datos de ejemplo sin identificar al cliente original.</div>
+ <div class="btnrow"><button class="btn ghost" id="autofill">Cargar caso de demostración</button></div>
+ <div class="twocol">
+  <div><label for="name">Nombre o alias</label><input id="name" placeholder="Ej.: Cliente de prueba" maxlength="60"></div>
+  <div><label for="age">Edad del titular</label><input id="age" type="number" min="0" max="110" placeholder="Ej.: 42"></div>
+ </div>
+ <div class="twocol">
+  <div><label for="loads">Edades de las cargas</label><input id="loads" placeholder="Ej.: 15, 7 · dejar vacío si no hay"></div>
+  <div><label for="income">Renta imponible mensual ($)</label><input id="income" inputmode="numeric" placeholder="Ej.: 2.000.000"></div>
+ </div>
+ <p class="hint">Los datos de prueba del formulario son ficticios; no corresponden necesariamente a la edad, renta o cargas del caso comercial histórico.</p>
+ <div class="btnrow"><button class="btn" id="next0">Continuar →</button></div>
+</section>
+<section class="panel step" id="step1">
+ <h2>¿Qué clínicas necesitas mantener?</h2>
+ <div class="twocol">
+  <div><label for="isapre">Tu isapre actual</label><select id="isapre"><option>Nueva Masvida</option><option>Consalud</option><option>Colmena</option><option>Banmédica</option><option>Vida Tres</option><option>Esencial</option><option>Cruz Blanca</option></select></div>
+  <div><label for="clinic">Clínica imprescindible</label><select id="clinic"><option value="davila">Clínica Dávila / Dávila Vespucio</option><option value="santamaria">Clínica Santa María</option><option value="otra">Otra (requiere verificar red)</option></select></div>
+ </div>
+ <div class="twocol">
+  <div><label for="pay">¿Cuánto pagas actualmente? (UF aproximadas)</label><input id="pay" inputmode="decimal" value="10,600"></div>
+  <div><label for="goal">¿Qué priorizas?</label><select id="goal"><option value="ambas">Ahorrar y mejorar topes</option><option value="ahorro">Menor precio</option><option value="topes">Mejorar límites de cobertura</option></select></div>
+ </div>
+ <p class="hint">Para el caso real anonimizado, 10,600 UF es una aproximación a partir de $433.000 informados y la UF implícita en la propuesta antigua; no es el precio pactado exacto en UF.</p>
+ <div class="btnrow"><button class="btn ghost back" data-go="0">Volver</button><button class="btn" id="next1">Continuar →</button></div>
+</section>
+<section class="panel step" id="step2">
+ <h2>Selecciona tu plan actual</h2>
+ <label class="opt"><input type="radio" name="mode" value="demo" checked> Usar caso real anonimizado: Nueva Masvida → Consalud</label>
+ <p class="hint">El sistema utiliza únicamente los datos no identificatorios transcritos de una propuesta comercial histórica. Incluye un contrato de origen con 100 % nominal hospitalario sujeto a topes y cuatro propuestas con precios finales cotizados en UF.</p>
+ <label class="opt"><input type="radio" name="mode" value="upload"> Tengo otro contrato PDF</label>
+ <input id="file" type="file" accept=".pdf,application/pdf">
+ <div class="banner warn">En esta versión web sin servidor, los PDF distintos del ejemplo <b>no se analizan automáticamente</b>. La API real de Muse Spark existe en el backend de ALMA Match, pero necesita ejecución de servidor y autorización de uso. No simulamos su lectura.</div>
+ <details><summary>¿Qué sabemos del contrato actual precargado?</summary><p>Prestaciones hospitalarias nominales 100 % con topes, entre ellos día cama 7,4 UF, medicamentos hospitalarios 15 UF y materiales 18 UF, según la primera página de la propuesta histórica. Estos topes deben contrastarse por prestación con las alternativas, no solo por el porcentaje.</p></details>
+ <div class="btnrow"><button class="btn ghost back" data-go="1">Volver</button><button class="btn" id="next2">Analizar caso precargado →</button></div>
+</section>
+<section class="panel step" id="step3">
+ <div class="eyebrow">Resultado · Caso histórico anonimizado</div>
+ <h2 id="welcome">Tu comparación</h2>
+ <div id="resultStatus" class="banner"></div>
+ <div class="compare" style="margin-top:14px">
+  <div class="card"><span class="pill">PLAN ACTUAL</span><h3>Nueva Masvida · contrato histórico</h3><div class="money" id="currentUF">≈ 10,600 UF</div><small>Pago aproximado mensual informado por el cliente</small><details><summary>Ver topes del contrato</summary><p>100 % nominal hospitalario, sujeto a límites: día cama 7,4 UF; medicamentos hospitalarios 15 UF; materiales e insumos 18 UF. No equivale a cobertura ilimitada.</p></details></div>
+  <div class="card highlight"><span class="pill">ALTERNATIVA DESTACADA POR TOPES</span><h3>Life Focus 6 26</h3><div class="money">8,374 UF</div><small>Precio de propuesta histórica · Consalud</small><div class="saved" id="featuredSaving">≈ 2,226 UF/mes</div><small>La comparación favorable de topes es condicional a prestación y red Dávila; no equivale a afirmar cobertura superior en todo.</small></div>
+ </div>
+ <h3 style="margin-top:22px">Opciones con precio documentado</h3>
+ <div id="cards" class="cards"></div>
+ <details><summary>Ver comparación específica de coberturas y topes</summary><div class="scroll"><table><thead><tr><th>Condición</th><th>Plan actual</th><th>Life Focus 6 26 (Dávila)</th></tr></thead><tbody><tr><td>Hospitalaria</td><td>100 % nominal, con tope por prestación</td><td>80 % sin tope para prestaciones preferentes indicadas en la propuesta</td></tr><tr><td>Día cama</td><td>7,4 UF por prestación</td><td>Condición preferente sujeta a red, médicos staff y habitación individual</td></tr><tr><td>Medicamentos hospitalarios</td><td>15 UF por evento</td><td>Revisar topes específicos del contrato alternativo</td></tr><tr><td>Urgencia</td><td>Revisar reglas específicas</td><td>Tabla de urgencia Dávila, copagos por tipo de atención y condiciones</td></tr></tbody></table></div></details>
+ <p class="status">Las cuatro tarifas proceden de la propuesta comercial histórica y corresponden a su composición original. **Si modificas edad, cargas o renta, no se recalculan esas ofertas antiguas**. Para obtener una cotización NUEVA usa el simulador siguiente con un precio BASE acreditado. Tampoco afirmamos que el ahorro haya sido contratado.</p>
+ <div class="btnrow"><button class="btn ghost back" data-go="2">Volver</button><button class="btn" id="next3">Ver cómo se calcula un precio nuevo →</button></div>
+</section>
+<section class="panel step" id="step4">
+ <div class="eyebrow">Simulador independiente · Parámetros oficiales fechados</div><h2>Precio nuevo: factores + GES + UF</h2>
+ <div class="banner"><b>UF del 04/11/2026: $41.268,88.</b> GES 90 de Consalud: 0,731 UF por beneficiario. Los otros valores GES cambian según isapre. <b>Esta es una simulación educativa con un precio base ficticio</b>; no duplica los componentes de las ofertas históricas.</div>
+ <div class="twocol">
+  <div><label for="base">Precio BASE de ejemplo (UF)</label><input id="base" value="3,500" inputmode="decimal"></div>
+  <div><label for="quoteIsapre">Isapre para simular</label><select id="quoteIsapre"><option>Consalud</option><option>Banmédica</option><option>Colmena</option><option>Cruz Blanca</option><option>Esencial</option><option>Nueva Masvida</option><option>Vida Tres</option></select></div>
+ </div>
+ <p class="hint">Edad y cargas se toman del formulario inicial. Si no ingresaste datos, la simulación no puede calcular un precio.</p>
+ <div class="btnrow"><button class="btn" id="simulate">Simular precio nuevo</button><button class="btn ghost back" data-go="3">Volver</button></div>
+ <div id="simulation" class="panel" style="margin-top:15px;display:none"></div>
+ <details><summary>Consultar tabla de factores completa</summary><div id="tfuTable" class="scroll"></div></details>
+ <details><summary>Consultar GES por isapre y fuentes</summary><div id="gesTable" class="scroll"></div>
+  <p class="sources"><a href="https://www.sii.cl/valores_y_fechas/uf/uf2026.htm" target="_blank" rel="noopener">UF SII</a> · <a href="https://www.nuevamasvida.cl/leycorta-2/" target="_blank" rel="noopener">Tabla TFU</a> · <a href="https://www.superdesalud.gob.cl/noticias/2025/12/por-primera-vez-la-superintendencia-de-salud-verifica-lo-que-las-isapres-quieren-cobrar-por-el-ges-y-corrige-excesos/" target="_blank" rel="noopener">GES Superintendencia</a></p>
+ </details>
+</section>
+<footer>ALMA Match · Prototipo experimental para Meta Hackathon. Datos del formulario solo en memoria del navegador; no se transfieren. Caso histórico anonimizado, parámetros fechados, sin garantía de contratación.</footer>
+</main>
+<script>
+(function(){
+'use strict';
+const $=x=>document.getElementById(x);
+const GES={'Consalud':.731,'Banmédica':.778,'Colmena':1.036,'Cruz Blanca':.971,'Esencial':.910,'Nueva Masvida':.854,'Vida Tres':.712};
+const TFU=[[0,19,.6,.6],[20,24,.9,.7],[25,34,1,.7],[35,44,1.3,.9],[45,54,1.4,1],[55,64,2,1.4],[65,110,2.4,2.2]];
+const UF_TODAY=41268.88;
+const quotes=[
+ {name:'Easy Focus 2 26',uf:6.790,clp:277372,h:60,a:50,note:'Mayor ahorro histórico; revisar condiciones Dávila y urgencias en red preferente.'},
+ {name:'Easy Focus 8 26',uf:7.798,clp:318549,h:80,a:50,note:'Hospitalaria 80 % Dávila según prestaciones y convenio de la propuesta.'},
+ {name:'Life Focus 6 26',uf:8.374,clp:342078,h:80,a:60,note:'80 % hospitalario sin tope en prestaciones preferentes indicadas para Dávila; condiciones de red/staff.'},
+ {name:'Life Focus 215 7 26',uf:9.202,clp:375902,h:70,a:60,note:'Incluye condiciones específicas en Dávila y otras redes, con restricciones que deben revisarse.'}
+];
+let step=0;
+const fmtUF=n=>Number(n).toLocaleString('es-CL',{minimumFractionDigits:3,maximumFractionDigits:3})+' UF';
+const fmtCLP=n=>Math.round(n).toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
+const readNum=x=>Number(String(x||'').trim().replace(/\./g,'').replace(',','.'));
+const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;'}[c]));
+function goto(i){
+ step=i;document.querySelectorAll('.step').forEach((x,n)=>x.classList.toggle('on',n===i));
+ document.querySelectorAll('#progress span').forEach((x,n)=>x.classList.toggle('active',n===i));
+ window.scrollTo(0,0);
+}
+function ageFactor(age,carga){
+ if(!Number.isInteger(age)||age<0||age>110)return null;
+ if(carga&&age<2)return 0;
+ for(const t of TFU)if(age>=t[0]&&age<=t[1])return carga?t[3]:t[2];
+ return null;
+}
+function chargeAges(){
+ let str=$('loads').value.trim();if(!str)return [];
+ return str.split(',').map(v=>Number(v.trim()));
+}
+function err(message){alert(message);return false;}
+$('autofill').onclick=()=>{
+ $('name').value='Cliente de demostración';$('age').value='42';$('loads').value='';
+ $('income').value='2000000';$('isapre').value='Nueva Masvida';$('pay').value='10,600';
+ $('clinic').value='davila';$('goal').value='ambas';
+};
+$('next0').onclick=()=>{
+ const age=Number($('age').value);
+ if(!$('name').value.trim())return err('Ingresa un alias, o utiliza los datos de demostración.');
+ if(!$('age').value||!Number.isInteger(age)||age<0||age>110)return err('Ingresa edad válida del titular.');
+ if(chargeAges().some(x=>!Number.isInteger(x)||x<0||x>110))return err('Revisa las edades de cargas.');
+ if(readNum($('income').value)<=0)return err('Ingresa renta imponible, o pulsa datos de demostración.');
+ goto(1);
+};
+$('next1').onclick=()=>{if(!(readNum($('pay').value)>0))return err('Ingresa el pago mensual aproximado en UF.');goto(2)};
+$('next2').onclick=()=>{
+ if(document.querySelector('input[name=mode]:checked').value!=='demo')
+   return err('La versión web sin servidor no puede leer un PDF nuevo. Selecciona el caso precargado; la API Meta está integrada por separado.');
+ if($('isapre').value!=='Nueva Masvida')return err('Este caso precargado corresponde exclusivamente a Nueva Masvida. Corrige la isapre actual o usa otro contrato con la API.');
+ showResults();goto(3);
+};
+$('next3').onclick=()=>goto(4);
+document.querySelectorAll('.back').forEach(b=>b.onclick=()=>goto(Number(b.dataset.go)));
+function showResults(){
+ const current=readNum($('pay').value),clinic=$('clinic').value;
+ $('welcome').textContent='Resultados para '+$('name').value.trim();
+ $('currentUF').textContent='≈ '+fmtUF(current);
+ const validClinic=clinic==='davila';
+ $('resultStatus').className='banner'+(validClinic?'':' warn');
+ $('resultStatus').textContent=validClinic?
+  'Mostramos precios de cuatro alternativas históricas y sus referencias a Dávila. El ahorro es potencial y las equivalencias no son automáticas.':
+  'No hay información suficiente en el caso histórico para verificar tu clínica escogida. Mostramos precios documentados, pero NO recomendaciones por red.';
+ $('featuredSaving').textContent=validClinic?'≈ '+fmtUF(current-8.374)+'/mes':'Sin ahorro recomendado para esta red';
+ const cards=$('cards');cards.innerHTML='';
+ for(let idx=0;idx<quotes.length;idx++){
+  const q=quotes[idx],s=current-q.uf;
+  const el=document.createElement('article');el.className='card'+(idx===2?' highlight':'');
+  el.innerHTML='<span class="pill">'+(idx===2?'MEJOR EN TOPES HOSPITALARIOS CONDICIONALES':'PRECIO HISTÓRICO')+'</span>'+
+   '<h3 style="margin-top:12px">'+esc(q.name)+'</h3><div class="price">'+fmtUF(q.uf)+'</div><small>≈ '+fmtCLP(q.clp)+' en la propuesta original</small>'+
+   '<p class="saved">≈ '+fmtUF(s)+'/mes</p><small>Ahorro hipotético contra el pago ingresado, no ahorro realizado</small>'+
+   '<details><summary>Ver clínicas y coberturas</summary><p>Dávila hospitalaria '+q.h+' %; ambulatoria '+q.a+' %. '+esc(q.note)+'</p></details>';
+  cards.appendChild(el);
+ }
+}
+const ages=TFU.map(t=>'<tr><td>'+t[0]+'–'+t[1]+' años</td><td>'+t[2].toFixed(2).replace('.',',')+'</td><td>'+t[3].toFixed(2).replace('.',',')+'</td></tr>').join('');
+$('tfuTable').innerHTML='<table><thead><tr><th>Edad</th><th>Titular</th><th>Carga</th></tr></thead><tbody>'+ages+'</tbody></table><p class="hint">Las cargas menores de 2 años no pagan el componente de precio base; sí se contabilizan para GES.</p>';
+$('gesTable').innerHTML='<table><thead><tr><th>Isapre</th><th>GES UF/mes/beneficiario</th></tr></thead><tbody>'+Object.entries(GES).map(x=>'<tr><td>'+esc(x[0])+'</td><td>'+fmtUF(x[1])+'</td></tr>').join('')+'</tbody></table>';
+$('simulate').onclick=()=>{
+ const base=Number($('base').value.replace(',','.'));
+ const age=Number($('age').value);const cs=chargeAges();
+ const isapre=$('quoteIsapre').value;
+ if(!Number.isFinite(base)||base<=0||base>100)return err('Ingresa un precio BASE ficticio de ejemplo entre 0 y 100 UF.');
+ const factors=[ageFactor(age,false),...cs.map(x=>ageFactor(x,true))];
+ if(factors.some(x=>x===null))return err('Hay edades inválidas.');
+ const sum=factors.reduce((a,b)=>a+b,0);
+ const complement=base*sum,ges=GES[isapre]*(1+cs.length),sub=complement+ges;
+ const renta=readNum($('income').value);const siete=Math.min(renta/UF_TODAY,90)*.07;
+ $('simulation').style.display='block';
+ $('simulation').innerHTML='<h3>Resultado educativo · NO una oferta comercial</h3>'+
+  '<p>Precio base '+fmtUF(base)+' × factores ('+factors.map(x=>x.toFixed(2)).join(' + ')+') = <b>'+fmtUF(complement)+'</b></p>'+
+  '<p>GES '+fmtUF(GES[isapre])+' × '+(1+cs.length)+' beneficiarios = <b>'+fmtUF(ges)+'</b></p>'+
+  '<div class="price">'+fmtUF(sub)+'</div><p>≈ '+fmtCLP(sub*UF_TODAY)+' · UF del 04/11/2026</p>'+
+  '<p>7 % legal estimado: '+fmtUF(siete)+' · diferencia positiva: '+fmtUF(Math.max(sub-siete,0))+'</p>'+
+  '<div class="status">Es solo precio complementario + GES. Faltan tarifa base real confirmada, vigencia, CAEC y productos adicionales si corresponden. Nunca sumar estas partidas a las tarifas históricas que YA son finales.</div>';
+};
+goto(0);
+})();
+</script>
+</body></html>
