@@ -4,6 +4,10 @@ on:
     branches: [desarrollo/experiencia-cliente-v1]
     paths:
       - '.github/workflows/demo-estatica.yml'
+      - 'backend/**'
+      - 'docs/cliente.html'
+      - 'tests/**'
+      - 'render.yaml'
   workflow_dispatch:
 permissions:
   contents: read
