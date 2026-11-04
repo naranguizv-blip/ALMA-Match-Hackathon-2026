@@ -106,19 +106,57 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
  <div class="btnrow"><button class="btn ghost back" data-go="1">Volver</button><button class="btn" id="next2">Analizar caso precargado →</button></div>
 </section>
 <section class="panel step" id="step3">
- <div class="eyebrow">Resultado · Caso histórico anonimizado</div>
- <h2 id="welcome">Tu comparación</h2>
- <div id="resultStatus" class="banner"></div>
- <div class="compare" style="margin-top:14px">
-  <div class="card"><span class="pill">PLAN ACTUAL</span><h3>Nueva Masvida · contrato histórico</h3><div class="money" id="currentUF">≈ 10,600 UF</div><small>Pago aproximado mensual informado por el cliente</small><details><summary>Ver topes del contrato</summary><p>100 % nominal hospitalario, sujeto a límites: día cama 7,4 UF; medicamentos hospitalarios 15 UF; materiales e insumos 18 UF. No equivale a cobertura ilimitada.</p></details></div>
-  <div class="card highlight"><span class="pill">ALTERNATIVA DESTACADA POR TOPES</span><h3>Life Focus 6 26</h3><div class="money">8,374 UF</div><small>Precio de propuesta histórica · Consalud</small><div class="saved" id="featuredSaving">≈ 2,226 UF/mes</div><small>La comparación favorable de topes es condicional a prestación y red Dávila; no equivale a afirmar cobertura superior en todo.</small></div>
- </div>
- <h3 style="margin-top:22px">Opciones con precio documentado</h3>
- <div id="cards" class="cards"></div>
- <details><summary>Ver comparación específica de coberturas y topes</summary><div class="scroll"><table><thead><tr><th>Condición</th><th>Plan actual</th><th>Life Focus 6 26 (Dávila)</th></tr></thead><tbody><tr><td>Hospitalaria</td><td>100 % nominal, con tope por prestación</td><td>80 % sin tope para prestaciones preferentes indicadas en la propuesta</td></tr><tr><td>Día cama</td><td>7,4 UF por prestación</td><td>Condición preferente sujeta a red, médicos staff y habitación individual</td></tr><tr><td>Medicamentos hospitalarios</td><td>15 UF por evento</td><td>Revisar topes específicos del contrato alternativo</td></tr><tr><td>Urgencia</td><td>Revisar reglas específicas</td><td>Tabla de urgencia Dávila, copagos por tipo de atención y condiciones</td></tr></tbody></table></div></details>
- <p class="status">Estos son precios de una propuesta comercial histórica, no una cotización actual para cualquier edad o carga. ALMA calcula factores, GES y 7 % internamente cuando dispone de tarifas base verificadas; <b>no suma esos componentes otra vez a precios finales ya cotizados</b>. La comparación de prestaciones requiere revisar condiciones de la red.</p>
- <div class="consentWrap"><label class="consentLabel"><input type="checkbox" id="consent"> Quiero abrir WhatsApp para solicitar una revisión personalizada. Solo se enviará el nombre del plan que elija; <b>no se enviarán mis datos de salud ni mis ingresos</b>.</label><p class="hint">El contacto se abre con Mejora Isapre; la asignación automática a la ejecutiva de cada isapre aún no está configurada.</p></div>
-<div class="btnrow"><button class="btn ghost back" data-go="2">Volver</button><button class="btn under" id="contact" type="button" disabled>Solicitar revisión por WhatsApp</button></div>
+  <div class="eyebrow">TU RESULTADO · COMPARACIÓN PERSONALIZADA</div>
+  <h2 id="welcome">Tu comparación</h2>
+  <p id="resultStatus" class="banner">Analizando las alternativas del caso de ejemplo…</p>
+  <div class="heroSaving">
+    <div class="lead" id="heroLabel">AHORRO POTENCIAL DEL PLAN SELECCIONADO</div>
+    <div class="amount" id="heroSavingUF">—</div>
+    <div class="sub" id="heroSavingCLP">—</div>
+    <div class="hint" id="heroSavingNote">Basado en una propuesta comercial histórica, no en una contratación confirmada.</div>
+  </div>
+  <div class="compare">
+    <article class="card">
+      <span class="pill">TU PLAN ACTUAL · NUEVA MASVIDA</span>
+      <h3 style="margin-top:11px">100 % hospitalario con límites</h3>
+      <div class="money" id="currentUF">≈ 10,600 UF</div>
+      <small id="currentCLP">Pago informado originalmente: $433.000</small>
+      <div class="coverageRow"><div><small>Cobertura nominal</small><b>100 %</b></div><div><small>Tope de día cama</small><b>7,4 UF</b></div></div>
+      <div class="coverageRow"><div><small>Medicamentos hospitalarios</small><b>15 UF</b></div><div><small>Materiales e insumos</small><b>18 UF</b></div></div>
+      <details><summary>Ver condiciones del contrato actual</summary>
+      <p class="hint">Estos topes proceden del cuadro del contrato antiguo reproducido en el documento de propuesta, página 1. Un porcentaje nominal del 100 % no elimina el límite económico de cada prestación.</p></details>
+    </article>
+    <article class="card highlight">
+      <span class="pill" id="featuredBadge">ALTERNATIVA PARA REVISAR · CONSALUD</span>
+      <h3 id="featuredPlan" style="margin-top:11px">Life Focus 6 26</h3>
+      <div class="money" id="featuredUF">8,374 UF</div>
+      <small id="featuredCLP">Valor histórico documentado</small>
+      <div class="coverageRow"><div><small>Hospitalaria en Dávila</small><b id="featuredHos">80 %</b></div><div><small>Ambulatoria en Dávila</small><b id="featuredAmb">60 %</b></div></div>
+      <p class="info" id="featuredTopes">Cobertura hospitalaria preferente sin tope en prestaciones identificadas, bajo condiciones de red y médicos staff.</p>
+      <p class="saved" id="featuredSaving">≈ 2,226 UF/mes de ahorro</p>
+      <small id="featuredCaution">Cobertura efectiva condicionada al contrato, la prestación y la clínica. No implica equivalencia en todo.</small>
+    </article>
+  </div>
+  <h3 class="sectionHeader">Elige entre las alternativas de la propuesta</h3>
+  <p class="hint">Puedes cambiar de opción y ver inmediatamente su precio y ahorro. Se muestran hasta tres tarjetas; la cuarta queda en «Ver otra alternativa».</p>
+  <div id="cards" class="comparisonList"></div>
+  <details><summary>Ver otra alternativa de la propuesta</summary><div id="extraPlan"></div></details>
+  <h3 class="sectionHeader">¿Por qué una cobertura menor puede protegerte mejor?</h3>
+  <div class="card">
+    <div class="coverageRow"><div><small>Tu plan actual</small><b>100 % hospitalario</b><small>Pero día cama sujeto a 7,4 UF de tope.</small></div>
+    <div><small>En el ejemplo de Life Focus 6 26</small><b>80 % preferente</b><small>Sin tope para prestaciones hospitalarias señaladas en la red Dávila, bajo condiciones.</small></div></div>
+    <div class="banner">El porcentaje por sí solo no determina qué plan es mejor. ALMA contrasta <b>tope por prestación, periodicidad, red, modalidad y copagos de urgencia</b>. La mejora debe confirmarse para cada prestación concreta.</div>
+    <details><summary>Ver comparación de coberturas y urgencia por clínica</summary>
+    <div class="scroll"><table><thead><tr><th>Prestación</th><th>Nueva Masvida actual</th><th id="detailAltTitle">Life Focus 6 26</th></tr></thead>
+    <tbody id="coverRows"></tbody></table></div></details>
+  </div>
+  <p class="status" id="historicLimit">Los precios y ahorros corresponden a una propuesta histórica, no a una oferta vigente. Cambiar edades, cargas o renta no modifica los precios finales cotizados en ese documento.</p>
+  <div class="consentWrap">
+    <label class="consentLabel"><input type="checkbox" id="consent"> Quiero abrir WhatsApp para solicitar una revisión personalizada. Solo se incluirá el plan elegido, <b>no mis datos de salud ni mi renta</b>.</label>
+    <p class="hint">La solicitud se dirige al contacto comercial de Mejora Isapre. La derivación automática a cada ejecutiva aún requiere configurar sus números autorizados.</p>
+  </div>
+  <div class="btnrow"><button class="btn ghost back" data-go="2">Volver</button>
+    <button class="btn under" id="contact" type="button" disabled>Solicitar revisión por WhatsApp</button></div>
 </section>
 <footer>ALMA Match · Prototipo experimental para Meta Hackathon. Datos del formulario solo en memoria del navegador; no se transfieren. Caso histórico anonimizado, parámetros fechados, sin garantía de contratación.</footer>
 </main>
