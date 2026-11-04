@@ -9,6 +9,7 @@ from .comparison import compare, legal_7_estimate
 from .meta_client import analyze_pdf
 from .verification import verify_document_claims
 from .demo_scenarios import synthetic_case
+from .historical_case import historical_comparison
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
@@ -159,3 +160,9 @@ async def demo_upload(pdf: UploadFile = File(...), escenario: str = Form('compar
     result['nota'] = ('Lectura real del PDF y comparación determinista con condiciones ficticias. '
                       'No es una extracción por IA en vivo ni una recomendación comercial.')
     return result
+
+
+@app.get('/api/caso-historico')
+def historical_demo():
+    """Sin datos de clientes. No llama a Meta ni confirma oferta vigente."""
+    return historical_comparison()
