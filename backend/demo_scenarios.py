@@ -7,13 +7,13 @@ from io import BytesIO
 from reportlab.pdfgen import canvas
 from .verification import verify_document_claims
 
-CLINIC = "Clinica Central"
+CLINIC = "Clinica Davila Recoleta"
 TEXT = (
     "Contrato ficticio ALMA Match: plan DEMO001 de Isapre Ficticia A",
-    "Hospitalaria 80% Clinica Central tope 400 UF por beneficiario al ano",
-    "Ambulatoria 70% Clinica Central tope 60 UF por beneficiario al ano",
-    "Urgencia 60% Clinica Central tope 5 UF por evento",
-    "Prestadores preferentes Clinica Central",
+    "Hospitalaria 80% Clinica Davila Recoleta tope 400 UF por beneficiario al ano",
+    "Ambulatoria 70% Clinica Davila Recoleta tope 60 UF por beneficiario al ano",
+    "Urgencia 60% Clinica Davila Recoleta tope 5 UF por evento",
+    "Prestadores preferentes Clinica Davila Recoleta",
 )
 CURRENT = {
     'hospitalaria': {'porcentaje':80, 'tope_uf':400, 'periodo':'anual'},
@@ -60,9 +60,9 @@ def _candidate(code, isapre, name, values, clinics=(CLINIC,)):
 
 def _candidate_ok():
     return _candidate('DEMO002','Ficticia B','Plan de prueba B', {
-        'hospitalaria':{'porcentaje':85,'tope_uf':450,'periodo':'anual'},
-        'ambulatoria':{'porcentaje':75,'tope_uf':70,'periodo':'anual'},
-        'urgencia':{'porcentaje':65,'tope_uf':6,'periodo':'evento'}})
+        'hospitalaria':{'porcentaje':80,'tope_uf':450,'periodo':'anual'},
+        'ambulatoria':{'porcentaje':70,'tope_uf':70,'periodo':'anual'},
+        'urgencia':{'porcentaje':60,'tope_uf':6,'periodo':'evento'}})
 
 def _candidate_wrong_limit():
     return _candidate('DEMO003','Ficticia C','Plan C: mismo porcentaje, peor tope', {
@@ -74,7 +74,7 @@ def _candidate_other_network():
     return _candidate('DEMO004','Ficticia D','Plan D: otra clinica', {
         'hospitalaria':{'porcentaje':90,'tope_uf':800,'periodo':'anual'},
         'ambulatoria':{'porcentaje':90,'tope_uf':90,'periodo':'anual'},
-        'urgencia':{'porcentaje':80,'tope_uf':8,'periodo':'evento'}},clinics=('Clinica Distinta',))
+        'urgencia':{'porcentaje':80,'tope_uf':8,'periodo':'evento'}},clinics=('Clinica Davila Vespucio',))
 
 def _candidate_same_isapre():
     return _candidate('DEMO005','Ficticia A','Plan E: misma isapre', {
