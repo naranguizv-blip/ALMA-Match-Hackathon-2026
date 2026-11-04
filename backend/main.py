@@ -311,3 +311,9 @@ async def judge_pdf(
                 'No calculamos ahorro hasta validar precios, red, factores, GES y topes.'),
         'privacidad':'El documento no se guarda en este servidor. Para analizarlo fue enviado a Meta Model API.'
     }
+
+
+@app.get('/prueba.html')
+def fictional_example_page():
+    """Interfaz alternativa de caso ficticio sin llamada a Meta."""
+    return FileResponse(ROOT/'docs'/'prueba.html',media_type='text/html')
