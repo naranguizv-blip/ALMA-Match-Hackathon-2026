@@ -317,3 +317,12 @@ async def judge_pdf(
 def fictional_example_page():
     """Interfaz alternativa de caso ficticio sin llamada a Meta."""
     return FileResponse(ROOT/'docs'/'prueba.html',media_type='text/html')
+
+
+@app.get('/api/catalogo-referencial')
+def catalogo_referencial():
+    """Veinte fichas identificadas, solo para exploración.
+
+    NO mezcla inventario preliminar con recomendaciones certificadas.
+    """
+    return json.loads((HERE/'catalogo_referencial_20.json').read_text(encoding='utf-8'))
