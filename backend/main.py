@@ -193,3 +193,9 @@ def quote_example(payload: dict):
         )
     except (ValueError, TypeError) as exc:
         raise HTTPException(400, str(exc))
+
+
+@app.get('/cliente')
+def client_demo():
+    """Recorrido de principio a fin sin datos personales ni solicitudes de IA."""
+    return FileResponse(ROOT/'docs'/'cliente.html',media_type='text/html')
