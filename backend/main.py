@@ -10,6 +10,7 @@ from .meta_client import analyze_pdf
 from .verification import verify_document_claims
 from .demo_scenarios import synthetic_case
 from .historical_case import historical_comparison
+from .pricing import reference_parameters, illustrative_quote
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
@@ -171,3 +172,30 @@ def historical_demo():
 @app.get('/caso-historico')
 def historic_presenter():
     return FileResponse(ROOT/'frontend'/'caso_historico.html', media_type='text/html')
+
+
+@app.get('/api/parametros-precio')
+def get_pricing_parameters():
+    """UF fechada, TFU y GES 90 con fuentes, solo lectura."""
+    return reference_parameters()
+
+
+@app.post('/api/simular-precio')
+def quote_example(payload: dict):
+    """Simulación educativa. Precio BASE nunca precio FINAL previo."""
+    try:
+        return illustrative_quote(
+            precio_base_uf=payload.get('precio_base_uf'),
+            isapre=payload.get('isapre'),
+            edad_titular=payload.get('edad_titular'),
+            edades_cargas=payload.get('edades_cargas', []),
+            renta_imponible_clp=payload.get('renta_imponible_clp')
+        )
+    except (ValueError, TypeError) as exc:
+        raise HTTPException(400, str(exc))
+
+
+@app.get('/cliente')
+def client_demo():
+    """Recorrido de principio a fin sin datos personales ni solicitudes de IA."""
+    return FileResponse(ROOT/'docs'/'cliente.html',media_type='text/html')

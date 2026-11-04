@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - desarrollo/demo-final-v0.8
+      - desarrollo/flujo-completo-v0.9
   pull_request:
     branches:
       - main

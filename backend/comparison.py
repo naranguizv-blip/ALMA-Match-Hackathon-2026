@@ -5,8 +5,8 @@ import unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-UF_REFERENCE_CLP = 41252.94  # Referencia de demostración, 01/11/2026; NO usar para cotizaciones reales
-UF_REFERENCE_DATE = '2026-11-01'
+UF_REFERENCE_CLP = 41268.88  # Fuente SII del 04/11/2026; fecha explícita, NO cotización final
+UF_REFERENCE_DATE = '2026-11-04'
 
 
 def norm(value):

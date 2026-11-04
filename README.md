@@ -57,3 +57,20 @@ El botón de análisis con IA requiere `MODEL_API_KEY` **únicamente como variab
 ## Propiedad y colaboradores
 
 El proyecto del concurso es independiente de los sistemas comerciales existentes. El material del Legal Agent Workshop se utilizó como referencia conceptual y no se copió al repositorio. No se atribuye a ningún colaborador no confirmado. La licencia de reutilización pública del código está pendiente de decisión de la titular; la publicación del repositorio no concede por sí sola derechos de reutilización.
+
+## Recorrido completo del cliente — v0.9 (04/11/2026)
+
+**Nueva demo navegable, sin servidor ni consumo de Meta:** [docs/cliente.html](docs/cliente.html).
+
+1. Persona ingresa alias, edad, cargas y renta imponible.
+2. Elige isapre actual, clínicas preferidas y pago actual en UF.
+3. Selecciona un caso histórico precargado. La opción de subir un PDF nuevo se muestra con su limitación: requiere el backend conectado a Meta Model API; no se simula una lectura real en la web estática.
+4. ALMA muestra el plan de Nueva Masvida (100 % nominal sujeto a topes específicos) y las cuatro alternativas de Consalud provenientes de una propuesta histórica anonimizada; calcula diferencias de precio y ahorro potencial en UF. Una mejor cobertura efectiva se analiza por prestación, tope, prestador, médicos staff, modalidad y periodo, no por porcentaje aislado.
+5. Una pantalla separada permite **simular cotización nueva desde un PRECIO BASE ficticio** aplicando TFU, GES90 por beneficiario y UF del **04/11/2026: $41.268,88** (fuente SII). Se muestra el 7 % legal con tope de 90 UF de renta imponible (6,3 UF de cotización). **Nunca sumar TFU o GES sobre un precio FINAL de una propuesta histórica.**
+
+Backend: `backend/pricing.py`, `GET /api/parametros-precio`, `POST /api/simular-precio`. Tests: `tests/test_pricing.py` (factores, menores de dos años, GES, tope legal, errores de entrada y no doble conteo histórico).
+
+**Límite de la actualización:** La UF queda fechada al 04/11/2026, no se sincroniza automáticamente a diario; esto requerirá un proveedor oficial automatizado o actualización validada posteriormente. Los precios históricos no se vuelven tarifas vigentes por aplicar la nueva UF. CAEC, productos adicionales y vigencia del precio base deben revisarse para emitir cotización comercial.
+
+Referencias: [SII UF](https://www.sii.cl/valores_y_fechas/uf/uf2026.htm), [Tabla de factores](https://www.nuevamasvida.cl/leycorta-2/), [GES90 verificado](https://www.superdesalud.gob.cl/noticias/2025/12/por-primera-vez-la-superintendencia-de-salud-verifica-lo-que-las-isapres-quieren-cobrar-por-el-ges-y-corrige-excesos/), [7 % legal](https://www.superdesalud.gob.cl/preguntas-frecuentes/cual-es-la-cotizacion-legal-para-salud-y-en-que-plazo-deben-ser-declaradas-y-pagadas/).
+
