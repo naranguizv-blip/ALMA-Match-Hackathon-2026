@@ -5,6 +5,7 @@ on:
       - main
       - desarrollo/muse-pdf-v0.5
       - desarrollo/comparador-visual-v0.6
+      - desarrollo/verificador-fail-closed-v0.7
   workflow_dispatch:
 permissions:
   contents: read
