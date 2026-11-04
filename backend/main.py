@@ -166,3 +166,8 @@ async def demo_upload(pdf: UploadFile = File(...), escenario: str = Form('compar
 def historical_demo():
     """Sin datos de clientes. No llama a Meta ni confirma oferta vigente."""
     return historical_comparison()
+
+
+@app.get('/caso-historico')
+def historic_presenter():
+    return FileResponse(ROOT/'frontend'/'caso_historico.html', media_type='text/html')
