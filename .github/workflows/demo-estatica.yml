@@ -1,0 +1,26 @@
+name: Demo estatica ALMA Match
+on:
+  push:
+    branches: [desarrollo/demo-final-v0.8]
+    paths:
+      - '.github/workflows/demo-estatica.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prueba:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python -m scripts.build_static_demo
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-estatica-alma
+          path: |
+            docs/index.html
+            docs/prueba.html
