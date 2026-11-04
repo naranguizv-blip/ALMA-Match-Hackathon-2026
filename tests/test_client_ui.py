@@ -49,6 +49,7 @@ def test_whatsapp_requiere_consentimiento_y_no_transmite_salud():
     assert 'no mis datos de salud ni mi renta' in HTML.lower()
 
 def test_carga_pdf_no_finge_analisis_meta():
-    assert 'Quiero subir mi contrato PDF' in HTML
-    assert 'no ejecuta Muse Spark' in HTML
+    assert 'Subir un contrato PDF y analizarlo con Muse Spark' in HTML
+    assert '/api/comparar-pdf-jurado' in HTML
+    assert 'no se hará pasar una carga local por un análisis real' in HTML
     assert 'sin tope' in HTML.lower()
