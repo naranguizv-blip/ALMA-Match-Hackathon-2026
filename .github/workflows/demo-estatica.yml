@@ -1,7 +1,7 @@
 name: Demo estatica ALMA Match
 on:
   push:
-    branches: [desarrollo/demo-final-v0.8]
+    branches: [desarrollo/flujo-completo-v0.9]
     paths:
       - '.github/workflows/demo-estatica.yml'
   workflow_dispatch:
@@ -20,7 +20,10 @@ jobs:
       - run: python -m scripts.build_static_demo
       - uses: actions/upload-artifact@v4
         with:
-          name: demo-estatica-alma
+          name: demo-alma-cliente-cotizador
           path: |
             docs/index.html
             docs/prueba.html
+            docs/cliente.html
+            backend/pricing.py
+            tests/test_pricing.py
