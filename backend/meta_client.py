@@ -10,12 +10,16 @@ REQUIRED = ('isapre','codigo_plan','nombre_plan','modalidad','hospitalaria','amb
             'urgencia','clinicas_preferentes','topes','observaciones')
 PROMPT = '''Lee cuidadosamente el PDF adjunto. Es un contrato de plan de salud chileno.
 Extrae SOLO datos respaldados por este PDF, nunca inventes precios ni ahorros.
-Responde EXCLUSIVAMENTE JSON válido con estas 10 claves:
-"isapre", "codigo_plan", "nombre_plan", "modalidad", "hospitalaria", "ambulatoria", "urgencia", "clinicas_preferentes", "topes", "observaciones".
-Las primeras cuatro claves son texto o null. Las otras seis son listas de objetos
+Responde EXCLUSIVAMENTE JSON válido con estas 11 claves:
+"isapre", "codigo_plan", "nombre_plan", "modalidad", "hospitalaria", "ambulatoria", "urgencia", "clinicas_preferentes", "topes", "observaciones", "protesis_ortesis".
+Las primeras cuatro claves son texto o null. Las otras siete son listas de objetos
 { "descripcion": texto, "pagina_pdf": entero o null, "evidencia": texto breve o null }.
 Distingue porcentajes por red/clínica y por prestación; no atribuyas porcentajes a toda una red si no corresponde.
 Distingue topes anuales frente a topes por evento/prestación. No inventes copagos fijos.
+En "protesis_ortesis" extrae por separado prótesis, órtesis y elementos de osteosíntesis,
+con porcentajes, tope UF, periodicidad y modalidad (preferente o libre elección),
+sin trasladarles una cobertura hospitalaria general del mismo documento.
+Cuando no aparezca esta prestación: usa [], y nunca completes datos inventados.
 IMPORTANTE: el campo evidencia debe ser una CITA LITERAL copiada sin cambiar palabras
 desde la página_pdf indicada, preferentemente entre 20 y 80 caracteres continuos.
 No uses paráfrasis, explicaciones, símbolos añadidos ni puntos suspensivos como cita.
@@ -54,6 +58,10 @@ def decode_json(raw):
     for key in REQUIRED[4:]:
         if not isinstance(obj[key],list):
             raise ValueError(f'Campo {key} no es una lista')
+    if 'protesis_ortesis' not in obj:
+        obj['protesis_ortesis']=[]
+    if not isinstance(obj['protesis_ortesis'],list):
+        raise ValueError('Campo protesis_ortesis no es una lista')
     # El modelo nunca puede acreditarse por sí mismo como "verificado".
     obj['estado_verificacion']='extraido_por_IA_pendiente_revision'
     obj['precio_final']=None
