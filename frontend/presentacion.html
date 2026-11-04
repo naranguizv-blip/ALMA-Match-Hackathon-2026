@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALMA Match | Demo interactiva Hackathon Meta 2026</title>
+<style>
+:root{--deep:#103543;--deep2:#102b39;--turq:#007c78;--mint:#13a99d;--bg:#f5f8f8;--card:#fff;--text:#18343c;--muted:#62757d;--line:#d9e6e6;--pale:#e9f6f3;--good:#0c795b;--orange:#9b640d}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font:16px/1.48 system-ui,-apple-system,Segoe UI,Arial;color:var(--text)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #e7a62c;outline-offset:3px}
+header{background:var(--deep2);color:#fff}header .inner{max-width:1140px;margin:auto;padding:17px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:13px}.mark{display:grid;place-items:center;width:43px;height:43px;background:var(--mint);border-radius:13px;font-size:26px;font-weight:800}.brand strong{font-size:20px;display:block;letter-spacing:-.04em}.brand small{color:#b4cfd2;font-size:12px}.headerTag{font-size:11px;color:#cceded;border:1px solid #507281;border-radius:999px;padding:8px 12px;letter-spacing:.04em;font-weight:800}
+main{max-width:1140px;margin:auto;padding:26px 26px 60px}.topline{font-size:11px;font-weight:850;letter-spacing:.14em;text-transform:uppercase;color:var(--turq)}h1{font-size:clamp(27px,3.4vw,40px);line-height:1.14;letter-spacing:-.045em;margin:6px 0 10px}h2{font-size:21px;letter-spacing:-.035em;margin:0 0 10px}h3{font-size:16px;margin:0 0 7px}.intro{color:#506b75;font-size:16px;max-width:840px;margin:0 0 23px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 5px 20px #173b4209}.panel.highlight{border:2px solid #3db3a7}.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:850;color:#0a8982;margin-bottom:10px}.small{font-size:13px;color:#61747b}.muted{color:var(--muted)}.topActions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:19px 0 20px}.primary{border:none;border-radius:12px;background:var(--turq);color:white;font-weight:800;padding:13px 18px;min-height:45px}.primary:hover{background:#066a66}.secondary{border:1px solid #abc7c4;border-radius:12px;background:#fff;color:#0d716d;font-weight:800;padding:12px 16px;min-height:45px}.secondary:hover{background:#eaf6f4}button:disabled{opacity:.58;cursor:not-allowed}.file{display:block;padding:15px;border:2px dashed #b7d7d4;border-radius:13px;color:#516b73;margin:13px 0}.file input{display:block;margin-top:10px;font-size:13px;width:100%}label.field{display:block;font-size:13px;font-weight:700;margin-bottom:7px}select{padding:11px 12px;border:1px solid #b7cfcd;border-radius:12px;color:#14353b;background:white;min-height:43px;width:100%}.bar{height:10px;border-radius:20px;background:#dce8e7;overflow:hidden}.bar>span{display:block;height:100%;background:var(--mint);border-radius:20px}.status{border-radius:11px;padding:13px 14px;background:#eef8f3;color:#19634d;margin-top:15px;font-size:13px;line-height:1.4}.status.warning{background:#fff7e7;color:#805a12}.status.info{background:#eaf3f8;color:#1f526d}.pill{display:inline-block;border-radius:999px;padding:6px 10px;font-weight:800;font-size:11px;color:#086d5b;background:#e1f6f0}.pill.amber{background:#fff0d5;color:#946213}.pill.dark{background:#e5edf0;color:#315463}.disclaimer{font-size:12px;color:#5b6f78;line-height:1.5}.metaList{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metaList>div{background:#f0f7f6;border-radius:11px;padding:10px 12px}.metaList b{display:block;font-size:20px;margin-top:3px}.result{display:none;margin-top:26px}.result.show{display:block}.twoPlans{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}.plan{background:white;border:1px solid var(--line);border-radius:18px;padding:20px}.plan.featured{border:2px solid #0c9b90;box-shadow:0 5px 22px #0a9b8a13}.plan h3{font-size:21px}.numbers{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.numbers span{flex:1;min-width:75px;background:#edf5f5;border-radius:9px;padding:8px;text-align:center;font-size:12px}.numbers b{font-size:20px;display:block}.comparepanel{margin-top:18px}.met{padding:12px 0;border-bottom:1px solid #eaf0ef}.met:last-child{border:0}.metTop{display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:9px}.vsrow{display:grid;grid-template-columns:83px 1fr 73px;align-items:center;gap:11px;margin-bottom:7px;font-size:12px}.vsrow b{text-align:right}.currentfill{background:#839aa4}.futurefill{background:#079c8e}.miniBar{height:11px;border-radius:50px;background:#e2ecec;overflow:hidden}.miniBar span{height:100%;display:block;border-radius:50px}.rejections{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.reject{background:#fff9ef;border:1px solid #eedfc6;border-radius:13px;padding:13px}.reject b{font-size:13px}.reject p{font-size:12px;color:#6c5b39;margin:6px 0 0}.tech{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tech article{background:#f3f8f8;padding:15px;border-radius:13px;border:1px solid #dfeae8;font-size:13px}.tech b{display:block;font-size:15px;margin-bottom:5px}.section{margin-top:28px}.link{color:#00766f;font-weight:750;text-decoration:underline}.summary{margin:15px 0;color:#445e67}.under{text-decoration:underline}.footer{font-size:12px;color:#71868b;text-align:center;margin-top:35px}.mobileCta{position:relative}
+
+.savingsCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}
+.savingsCards>div{padding:17px;border-radius:14px;background:#edf5f5;min-width:0}
+.savingsCards span,.savingsCards small{display:block;font-size:12px;color:#49636c}
+.savingsCards strong{display:block;font-size:clamp(23px,2.3vw,31px);letter-spacing:-.035em;white-space:nowrap}
+.savingsCards .saved{background:#e2f4ed;border:1px solid #8ecbbb}
+.savingsCards .saved strong{color:#0b735b}
+@media(max-width:760px){.savingsCards{grid-template-columns:1fr 1fr}.savingsCards .saved{grid-column:1/-1}.savingsCards strong{font-size:24px}}
+@media(max-width:760px){header .inner{padding:12px 15px}.headerTag{display:none}main{padding:16px 13px 38px}.layout,.twoPlans{grid-template-columns:1fr}.panel{padding:16px}.rejections{grid-template-columns:1fr}.tech{grid-template-columns:1fr}.intro{font-size:14px}.topActions{gap:8px}.topActions button{width:100%}.vsrow{grid-template-columns:65px 1fr 65px;gap:6px}.metaList{grid-template-columns:1fr 1fr} .brand strong{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="inner"><div class="brand"><div class="mark">A</div><div><strong>ALMA Match</strong><small>Tu plan. Tu comparación. Tu decisión.</small></div></div><span class="headerTag">META HACKATHON 2026 · DEMOSTRACIÓN TÉCNICA</span></div></header>
+<main>
+ <div class="topline">Proyecto independiente · Fundadora: Nicole</div>
+ <h1>Compara tu contrato, no solo un porcentaje.</h1>
+ <p class="intro">ALMA Match utiliza IA de Meta para extraer condiciones y un motor independiente para evaluar evidencias, topes, redes y equivalencias. Aquí puedes probar el comportamiento del comparador con un contrato <b>100 % ficticio</b>, utilizando como referencia los nombres de las clínicas reales <b>Dávila Recoleta</b> y <b>Dávila Vespucio</b>. Los convenios y porcentajes del ejemplo son inventados.</p>
+ <div class="layout">
+   <section class="panel highlight" aria-labelledby="uploadTitle">
+      <div class="eyebrow">PASO 1 · CONTRATO DE PRUEBA</div>
+      <h2 id="uploadTitle">Sube un contrato como lo haría un cliente</h2>
+      <p class="small">Elige el PDF que creamos para la demostración. El servidor leerá y comprobará sus citas contra el documento. <b>Esta prueba no llama a Meta ni consume créditos.</b></p>
+      <div class="topActions"><button class="secondary" id="download" type="button">① Descargar PDF ficticio</button></div>
+      <label class="file" for="pdfInput"><b>② Seleccionar el documento</b><input id="pdfInput" type="file" accept=".pdf,application/pdf"/></label>
+      <label class="field" for="scenario">③ ¿Qué quieres probar?</label>
+      <select id="scenario"><option value="comparable">Una alternativa que supera las reglas de prueba</option><option value="no_comparable">Ninguna alternativa suficientemente comparable</option></select>
+      <div class="topActions"><button class="primary" id="analyze">Analizar y comparar</button></div>
+      <p id="status" class="status info" role="status">Listo para comenzar. Descarga y carga el PDF de ejemplo.</p>
+   </section>
+   <section class="panel" aria-labelledby="technicalTitle">
+       <div class="eyebrow">PASO 2 · TECNOLOGÍA</div>
+       <h2 id="technicalTitle">IA para extraer. Reglas para comprobar.</h2>
+       <div class="metaList"><div><span class="small">Modelo integrado</span><b>Muse Spark 1.3</b></div><div><span class="small">Prueba con PDF real</span><b>Exitosa</b></div></div>
+       <p class="small">Muse Spark <b>ya leyó un contrato público real de Esencial</b> en una ejecución independiente de GitHub Actions. El endpoint <code>/api/analizar</code> está conectado a Meta, pero <b>no se ejecuta en esta demostración gratuita</b>.</p>
+       <p class="small">En este recorrido, la extracción del caso ficticio está predefinida; el servidor comprueba que el PDF cargado realmente contiene sus evidencias y aplica el comparador.</p>
+       <div class="status">✓ Las pruebas unitarias anteriores aprobaron <b>28 casos</b> en GitHub Actions. La lectura en vivo del navegador con Meta es un paso todavía pendiente.</div>
+       <div class="tech"><article><b>Python + FastAPI</b>Procesamiento del contrato y API del comparador</article><article><b>Verificador externo</b>Comprueba citas textuales por página</article><article><b>Reglas comerciales</b>Detectan topes desfavorables y redes distintas</article></div>
+       <p class="small" style="margin-top:15px"><a class="link" href="https://github.com/naranguizv-blip/ALMA-Match-Hackathon-2026/actions/runs/41368596616" target="_blank" rel="noopener">Ver prueba independiente de Muse Spark con PDF auténtico</a></p>
+   </section>
+ </div>
+ <section class="panel section" id="casoHistorico" aria-labelledby="caseTitle">
+   <div class="eyebrow">LA EXPERIENCIA QUE INSPIRÓ ALMA MATCH</div>
+   <h2 id="caseTitle">Una rebaja real de precio. La cobertura, por verificar.</h2>
+   <p class="small">Caso comercial previo contado de forma anónima. Los montos reflejan una experiencia histórica de asesoría, <b>no son una cotización vigente ni un resultado calculado por esta demo</b>. No atribuimos una clínica específica a este caso porque no está documentada.</p>
+   <div class="savingsCards">
+     <div><span>Pago anterior</span><strong>$570.000</strong><small>mensuales</small></div>
+     <div><span>Nuevo pago</span><strong>$485.399</strong><small>mensuales</small></div>
+     <div class="saved"><span>Diferencia mensual</span><strong>$84.601</strong><small>en el caso histórico</small></div>
+   </div>
+   <div class="status warning"><b>Lo que ALMA Match debe comprobar:</b> ¿se conservaron las clínicas que importaban, las coberturas hospitalarias y ambulatorias, las urgencias y los topes? <b>No diremos que son iguales sin los dos contratos.</b></div>
+ </section>
+ <section class="result" id="result" aria-live="polite">
+    <div class="eyebrow" style="margin-top:20px">PASO 3 · RESULTADO DE LA PLATAFORMA</div>
+    <h2 id="resultTitle">Resultado del análisis</h2>
+    <p id="resultDesc" class="summary"></p>
+    <div id="verifyInfo" class="status"></div>
+    <div class="twoPlans" id="plans"></div>
+    <section class="panel comparepanel" id="comparePanel" style="display:none"><h2>La diferencia está en los topes, no solo en el porcentaje</h2><div id="bars"></div><p class="disclaimer">Los topes anuales se comparan con topes anuales; los topes por evento con topes por evento. Coberturas y topes enteramente ficticios. Los nombres de las clínicas son reales; no afirmamos convenios reales.</p></section>
+    <section class="section"><h2>Lo que ALMA descartó y por qué</h2><div class="rejections" id="rejected"></div></section>
+    <p class="status warning" id="price">Sin precio final verificado no es posible calcular un ahorro real. Esta prueba no constituye una oferta comercial.</p>
+ </section>
+ <p class="footer">ALMA Match — prototipo independiente del concurso. No se utilizan datos personales ni se envían contactos comerciales. Los nombres Dávila Recoleta y Dávila Vespucio son reales; isapres, planes y condiciones en el comparador son ficticios.</p>
+</main>
+<script>
+(function(){
+ const $=id=>document.getElementById(id);
+ const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ $('download').onclick=()=>{location.href='/api/contrato-ficticio.pdf';};
+ $('analyze').onclick=async()=>{
+  let file=$('pdfInput').files[0];
+  if(!file){$('status').textContent='Primero selecciona el PDF ficticio descargado.';$('status').className='status warning';return}
+  let fd=new FormData();fd.append('pdf',file);fd.append('escenario',$('scenario').value);
+  $('status').textContent='Comprobando el archivo recibido, sus páginas y sus citas…';$('status').className='status info';
+  $('analyze').disabled=true;
+  try{
+   let r=await fetch('/api/demo-archivo',{method:'POST',body:fd});let data=await r.json();
+   if(!r.ok)throw new Error(data.detail||'No fue posible analizar el contrato');
+   render(data);
+   $('status').textContent=`PDF recibido y verificado: ${data.paginas_pdf} página, ${data.verificacion_documental.citas_comprobadas} citas comprobadas.`;$('status').className='status';
+   $('result').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){$('status').textContent='Comparación detenida: '+e.message;$('status').className='status warning'}
+  finally{$('analyze').disabled=false}
+ };
+ function render(data){
+  let comparison=data.comparacion||{}, verification=data.verificacion_documental||{}, plan=data.resultado||{};
+  let options=comparison.alternativas||[];
+  $('result').classList.add('show');
+  $('resultTitle').textContent=options.length?'Tenemos una alternativa comparable en este caso ficticio':'No existe una alternativa suficientemente comparable';
+  $('resultDesc').textContent='Se procesó el archivo '+data.archivo_procesado+'. La plataforma comprobó citas y aplicó reglas independientes de comparación. Los prestadores citados existen, pero la asignación de porcentajes, topes e isapres es completamente ficticia.';
+  $('verifyInfo').textContent=verification.aprobado_para_comparacion?`✓ ${verification.citas_comprobadas} citas textuales localizadas en el PDF. La exactitud semántica y la comercialización real no están acreditadas.`:'El verificador encontró errores y bloqueó la comparación.';
+  let current=`<article class="plan"><span class="pill dark">TU PLAN ACTUAL · FICTICIO</span><h3 style="margin-top:13px">${escapeHtml(plan.nombre_plan)}</h3><p class="small">${escapeHtml(plan.isapre)} · ${escapeHtml(plan.codigo_plan)} · Clínica Dávila Recoleta</p><div class="numbers"><span>Hospitalaria<b>80 %</b></span><span>Ambulatoria<b>70 %</b></span><span>Urgencia<b>60 %</b></span></div><p class="small">Topes: hospitalaria 400 UF/año · ambulatoria 60 UF/año · urgencia 5 UF/evento.</p></article>`;
+  let opt=options[0];
+  let alternative=opt?`<article class="plan featured"><span class="pill">ALTERNATIVA COMPATIBLE · FICTICIA</span><h3 style="margin-top:13px">${escapeHtml(opt.nombre)}</h3><p class="small">${escapeHtml(opt.isapre)} · ${escapeHtml(opt.codigo)} · Clínica Dávila Recoleta</p><div class="numbers"><span>Hospitalaria<b>80 %</b></span><span>Ambulatoria<b>70 %</b></span><span>Urgencia<b>60 %</b></span></div><p class="small">Mismos porcentajes del plan A, con topes más altos en este caso ficticio: hospitalaria 450 UF/año · ambulatoria 70 UF/año · urgencia 6 UF/evento.</p></article>`:`<article class="plan"><span class="pill amber">ALMA NO RECOMIENDA UN CAMBIO</span><h3 style="margin-top:13px">No hay alternativa elegible</h3><p class="small">Ningún otro plan ficticio supera todas las condiciones de cobertura, red y topes que exigimos en este escenario.</p><p class="small"><b>Lo correcto es informar y no inventar una recomendación.</b></p></article>`;
+  $('plans').innerHTML=current+alternative;
+  $('comparePanel').style.display=opt?'block':'none';
+  $('bars').innerHTML=opt?(comparison.topes_visuales||[]).map(x=>{
+    let max=Math.max(x.actual_uf,x.alternativa_uf,1), a=(x.actual_uf/max*100).toFixed(1),b=(x.alternativa_uf/max*100).toFixed(1);
+    return `<div class="met"><div class="metTop"><span>${escapeHtml(x.tipo)}</span><span>UF por ${escapeHtml(x.periodo)}</span></div><div class="vsrow"><span>Plan actual</span><div class="miniBar"><span class="currentfill" style="width:${a}%"></span></div><b>${escapeHtml(x.actual_uf)} UF</b></div><div class="vsrow"><span>Alternativa</span><div class="miniBar"><span class="futurefill" style="width:${b}%"></span></div><b>${escapeHtml(x.alternativa_uf)} UF</b></div></div>`;
+  }).join(''):'';
+  $('rejected').innerHTML=(comparison.rechazadas||[]).map(x=>`<article class="reject"><b>${escapeHtml(x.nombre)}</b><p>${escapeHtml((x.motivos||[]).join('. '))}</p></article>`).join('');
+ }
+})();
+</script>
+</body>
+</html>
