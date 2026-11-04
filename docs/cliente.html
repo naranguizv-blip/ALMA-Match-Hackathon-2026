@@ -171,7 +171,7 @@ const quotes=[
  {name:'Easy Focus 2 26',uf:6.790,clp:277372,h:60,a:50,note:'Hospitalaria 60 % sin tope en la red Dávila para prestaciones preferentes indicadas; revisar anexos y urgencia.'},
  {name:'Easy Focus 8 26',uf:7.798,clp:318549,h:80,a:50,note:'Hospitalaria 80 % sin tope en la red Dávila para prestaciones indicadas; urgencias de red preferente por verificar.'},
  {name:'Life Focus 6 26',uf:8.374,clp:342078,h:80,a:60,note:'Hospitalaria 80 % sin tope para prestaciones señaladas en Dávila bajo médicos staff y condiciones de red; urgencia Dávila indicada en la propuesta.'},
- {name:'Life Focus 215 7 26',uf:9.202,clp:375902,h:80,a:60,note:'Coberturas diferenciadas por sede y prestación; revisar anexos. El cuadro de urgencia no permite equiparar todos los prestadores.'}
+ {name:'Life Focus 215 7 26',uf:9.202,clp:375902,h:70,a:60,note:'Coberturas diferenciadas por sede y prestación; revisar anexos. El cuadro de urgencia no permite equiparar todos los prestadores.'}
 ];
 let selected=2;
 const fmtUF=n=>Number(n).toLocaleString('es-CL',{minimumFractionDigits:3,maximumFractionDigits:3})+' UF';
@@ -278,7 +278,9 @@ function setComparison(index){
  }else if(saving>0){
   $('heroLabel').textContent='AHORRO MENSUAL POTENCIAL · '+q.name;
   $('heroSavingUF').textContent='≈ '+fmtUF(saving)+'/mes';
-  $('heroSavingCLP').textContent='≈ '+fmtCLP(saving*40850)+' al mes · conversión histórica aproximada';
+  $('heroSavingCLP').textContent=Math.abs(pay-10.600)<0.00001?
+  fmtCLP(433000-q.clp)+' mensuales según precios originales de la propuesta':
+  '≈ '+fmtCLP(saving*40850)+' mensuales · conversión histórica aproximada';
   $('featuredSaving').textContent='≈ '+fmtUF(saving)+'/mes de ahorro potencial';
  }else{
   $('heroLabel').textContent='ESTA OPCIÓN NO PRODUCE AHORRO';
