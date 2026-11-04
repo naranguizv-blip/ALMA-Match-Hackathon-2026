@@ -1,10 +1,14 @@
 name: Pruebas ALMA Match v0.6
 on:
+  push:
+    branches:
+      - desarrollo/demo-final-v0.8
   pull_request:
     branches:
       - main
       - desarrollo/muse-pdf-v0.5
       - desarrollo/comparador-visual-v0.6
+      - desarrollo/verificador-fail-closed-v0.7
   workflow_dispatch:
 permissions:
   contents: read

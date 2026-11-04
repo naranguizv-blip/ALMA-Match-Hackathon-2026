@@ -1,51 +1,59 @@
-# ALMA Match — Hackathon Meta 2026 (versión 0.6)
+# ALMA Match — Comparador verificable de contratos de isapre
 
-Prototipo independiente de Mejora Isapre / ALMA comercial. **Repositorio de desarrollo: privado.** Enfocado en demostrar lectura de contratos con IA y comparación de coberturas basada en documentos, sin duplicar ni exponer la Biblioteca de WordPress.
+**Meta Global AI Developer Hackathon 2026 · Build for Your World**  
+**Nuevo desarrollo del 26 de octubre al 4 de noviembre de 2026 · Prototipo independiente de WordPress y de ALMA comercial.**
 
-## Qué está implementado
+ALMA Match busca que una persona comprenda las coberturas, topes, condiciones y precios de su plan de salud sin depender de un intermediario. Las alternativas no se consideran equivalentes por presentar porcentajes similares.
 
-- Interfaz visual conservando la línea gráfica v0.4, sin barra lateral de pasos.
-- Captura de edad, cargas, **isapre actual**, pactado en **UF**, pago actual y solo **renta imponible** para estimar el 7 %.
-- Lectura de PDF nuevo con **Muse Spark** vía servidor FastAPI, sin clave API en el navegador.
-- Comparador determinista con catálogo reducido de **seis** extractos Banmédica (datos recopilados previamente por la usuaria), que no se presentan como verificados para contratación.
-- Excluye planes de la isapre actual y bloquea comparación si el PDF corresponde a otra isapre distinta de la que indicó el cliente.
-- Resultado con plan actual, hasta tres alternativas documentales, clínica por clínica, hospitalaria, ambulatoria y urgencias, más desplegables.
-- No ofrece ahorro ni cotización si faltan precio base, factores, GES y la UF aplicable.
-- La demostración precargada permite ver el recorrido sin hacer otra llamada a Meta.
-- **11 pruebas automatizadas locales aprobadas** (sin consumir créditos de Meta).
+## Qué contiene realmente esta entrega
 
-## Qué está realmente comprobado
+**1. Uso significativo de IA de Meta.** En `backend/meta_client.py` se integra Meta Model API (`muse-spark-1.3`) para leer PDF, identificar isapre, código, coberturas hospitalarias, ambulatorias, urgencias, redes y topes, y devolver información estructurada con página y cita. Una ejecución real en GitHub Actions analizó un contrato público de Esencial `CS50400826`: [ver ejecución](https://github.com/naranguizv-blip/ALMA-Match-Hackathon-2026/actions/runs/41368596616). **Ese ensayo de API es independiente de las demostraciones gratuitas**; no afirmar que Muse analizó en vivo los casos precargados.
 
-Una ejecución independiente de GitHub Actions confirmó que **Muse Spark 1.3 leyó el PDF público CS50400826** y extrajo datos estructurados. Esta nueva aplicación v0.6 combina el mismo tipo de llamada con un comparador de muestra. **Todavía no se ha ensayado en un navegador la experiencia completa con una nueva lectura de Meta**: el test del endpoint emplea una respuesta simulada para no gastar créditos.
+**2. Verificador documental externo.** `backend/verification.py` contrasta los textos atribuidos con la página del PDF, exige información hospitalaria, ambulatoria, de urgencia, red y topes, y bloquea citas inexistentes o incompletas. Encontrar una cita literal **no certifica la interpretación semántica**; la interfaz conserva esta advertencia. Los escaneos sin texto extraíble requieren revisión humana.
 
-La extracción de ejemplo es un resumen de una lectura previa del contrato. La IA no verifica por sí sola sus resultados. Los seis extractos Banmédica tampoco equivalen a cotizaciones ni a una revisión contractual final. No se publican PDF de terceros.
+**3. Motor de comparación.** `backend/comparison.py` aplica reglas de red, topes y exclusión de la isapre actual y no calcula ahorro sin precios documentados. El catálogo real del negocio no está copiado aquí: seis extractos de Banmédica permanecen bloqueados mientras no se certifiquen todos sus topes/condiciones.
 
-## Ejecutar en un equipo de desarrollo
+**4. Demo funcional segura con PDF ficticio.** `/presentacion` permite descargar y volver a subir un PDF generado por nosotros. `POST /api/demo-archivo` realmente lee el archivo, comprueba sus citas y muestra un escenario ficticio comparable y uno rechazado por topes o clínicas. Esta ruta **no llama a Meta** ni gasta créditos.
+
+**5. Caso histórico REAL anonimizado con precios en UF.** `/caso-historico` presenta un pago de Nueva Masvida informado por un cliente y cuatro precios ofertados por Consalud en una propuesta histórica. El backend reproduce el ahorro potencial **determinísticamente**, muestra fuentes y diferencia coberturas en Clínica Dávila. El PDF original privado y los datos de identificación del cliente **no** forman parte del repositorio. **La transcripción se hizo manualmente, no mediante Muse Spark en vivo.** La propuesta no acredita que el cliente contratara, ahorrara efectivamente o mantenga esas tarifas. El pago original en UF es **estimado**, no pactado exacto.
+
+## Ejecutar y probar
 
 Python 3.11+:
 
-```sh
-python -m venv .venv
-# activar entorno y luego:
-pip install -r requirements.txt
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q
 python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-Abrir `http://127.0.0.1:8000` y pulsar **Ver demo ya analizada** para comprobar la comparación sin créditos.
+Visitar:
 
-Para procesar un PDF nuevo, configura `MODEL_API_KEY` exclusivamente como variable local del servidor. No agregues claves a GitHub ni al JavaScript. Solo utilizar documentos públicos y sin datos personales.
+- `http://127.0.0.1:8000/presentacion` — demo completa sin llamadas pagadas.
+- `http://127.0.0.1:8000/caso-historico` — ejercicio histórico en UF.
+- `http://127.0.0.1:8000/` — interfaz conversacional, carga de PDF y conexión a Muse Spark.
+- `http://127.0.0.1:8000/health` — salud del servidor.
+- `GET /api/caso-historico` — datos calculados anonimizados.
 
-Pruebas sin coste de API:
+El botón de análisis con IA requiere `MODEL_API_KEY` **únicamente como variable de entorno del servidor**, además de autorización y presupuesto de API. El repositorio nunca contiene secretos.
 
-```sh
-python -m pytest -q
-```
+## Pruebas, evidencia y límites
 
-## Límites y próximos pasos
+- Tests sin gasto Meta: `tests/` (verificar estado exacto en GitHub Actions).
+- Fuente del caso histórico, página 1: pago aproximado de $433.000, pero sumandos $377.000 + $56.300 = $433.300; diferencia no ocultada.
+- Propuestas históricas (páginas 2–5): 6,790 / 7,798 / 8,374 / 9,202 UF.
+- Típico sesgo evitado: porcentaje alto con tope bajo; se distingue `UF/evento` de `UF/año` y red/sede.
+- No presentar porcentajes en Clínica Dávila como garantía actual de convenio; pueden existir condiciones de médicos staff, red y prestaciones.
+- La verificación por coincidencia textual no garantiza exactitud de la interpretación, equivalencia integral ni precios vigentes.
+- Los datos de catálogo comercial de WordPress no están incluidos; **no** se expone código privado de ALMA ni PDF de terceros.
+- No desplegar la ruta de análisis público con Meta sin autenticación, cuotas y revisión de protección de datos.
 
-- Pendientes precios y factores vigentes, GES, verificación exhaustiva por prestación y cálculo financiero real.
-- Contrastar contra los PDF originales las condiciones resumidas de Banmédica.
-- La extracción dinámica de nuevos documentos requiere una llamada real a Meta (consume créditos). El flujo de demostración precargada no.
-- Este prototipo no envía formularios de contacto ni modifica WordPress.
-- **No desplegar públicamente** el servidor antes de agregar autenticación, cuotas, protección frente a abuso y evaluación de privacidad.
-- Revisar licencia de código abierto y derechos de publicación antes de cambiar el repositorio a público.
+## Material complementario
+
+- [Evidencias y límites del caso](docs/evidencias-y-limites.md)
+- [Guion de video y checklist de entrega](docs/entrega-urgente-hackathon.md)
+- [Arquitectura adaptada del taller de Meta](docs/arquitectura-verificacion-meta.md)
+
+## Propiedad y colaboradores
+
+El proyecto del concurso es independiente de los sistemas comerciales existentes. El material del Legal Agent Workshop se utilizó como referencia conceptual y no se copió al repositorio. No se atribuye a ningún colaborador no confirmado. La licencia de reutilización pública del código está pendiente de decisión de la titular; la publicación del repositorio no concede por sí sola derechos de reutilización.

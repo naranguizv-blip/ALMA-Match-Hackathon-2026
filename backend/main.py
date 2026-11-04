@@ -9,6 +9,7 @@ from .comparison import compare, legal_7_estimate
 from .meta_client import analyze_pdf
 from .verification import verify_document_claims
 from .demo_scenarios import synthetic_case
+from .historical_case import historical_comparison
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parent
@@ -113,3 +114,60 @@ async def analizar(pdf:UploadFile=File(...),isapre_actual:str=Form(...),clinicas
     result=build_response(extracted,isapre_actual,clinics,objetivo,renta_imponible,pactado_uf,pago_actual,False,verification)
     result['paginas_pdf']=pages
     return result
+
+
+# Hackathon: recorrido verificable con documento sintético propio. No usa Meta.
+@app.get('/presentacion')
+def presenter():
+    return FileResponse(ROOT/'frontend'/'presentacion.html', media_type='text/html')
+
+
+@app.get('/api/contrato-ficticio.pdf')
+def sample_contract():
+    from fastapi.responses import Response
+    from .demo_scenarios import _pdf
+    return Response(content=_pdf(), media_type='application/pdf',
+                    headers={'Content-Disposition': 'attachment; filename="ALMA_Contrato_FICTICIO_DEMO001.pdf"'})
+
+
+@app.post('/api/demo-archivo')
+async def demo_upload(pdf: UploadFile = File(...), escenario: str = Form('comparable')):
+    """Verifica PDF realmente recibido contra el CASO SINTÉTICO de muestra.
+
+    Las coberturas en esta ruta vienen de una plantilla declarada y NO de Muse.
+    Muse se utiliza únicamente en /api/analizar, cuya llamada consume recursos.
+    """
+    from .demo_scenarios import _extraction, synthetic_case
+    if escenario not in ('comparable', 'no_comparable'):
+        raise HTTPException(400, 'Escenario no válido')
+    if not (pdf.filename or '').lower().endswith('.pdf'):
+        raise HTTPException(400, 'Selecciona el contrato PDF ficticio de la demostración.')
+    raw = await pdf.read(2*1024*1024+1)
+    await pdf.close()
+    if not raw.startswith(b'%PDF-') or len(raw)>2*1024*1024:
+        raise HTTPException(400, 'El documento no es un PDF de demostración válido.')
+    from .verification import verify_document_claims
+    extracted = _extraction()
+    verification = verify_document_claims(extracted, raw)
+    if not verification['aprobado_para_comparacion']:
+        raise HTTPException(422, 'El PDF no coincide con las evidencias del contrato ficticio o está ilegible. No se puede comparar.')
+    result = synthetic_case(escenario)
+    result['verificacion_documental'] = verification
+    result['archivo_procesado'] = pdf.filename
+    result['paginas_pdf'] = verification['paginas_pdf']
+    result['origen_extraccion'] = ('Plantilla sintética conocida comprobada contra el PDF cargado. '
+                                   'Esta ruta NO invoca Meta Model API.')
+    result['nota'] = ('Lectura real del PDF y comparación determinista con condiciones ficticias. '
+                      'No es una extracción por IA en vivo ni una recomendación comercial.')
+    return result
+
+
+@app.get('/api/caso-historico')
+def historical_demo():
+    """Sin datos de clientes. No llama a Meta ni confirma oferta vigente."""
+    return historical_comparison()
+
+
+@app.get('/caso-historico')
+def historic_presenter():
+    return FileResponse(ROOT/'frontend'/'caso_historico.html', media_type='text/html')
