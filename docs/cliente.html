@@ -61,9 +61,9 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
 </style></head>
 <body><header><div class="in"><div class="logo">A</div><div><b>ALMA Match</b><small>Tu plan. Tu comparación. Tu decisión.</small></div></div></header>
 <main>
-<div class="eyebrow">Prototipo Hackathon Meta 2026 · recorrido del cliente</div>
+<div class="eyebrow">Prototipo con datos reales · integración de Muse Spark en desarrollo</div>
 <h1>Descubre qué estás pagando y qué alternativas tienes.</h1>
-<p class="intro">Sube tu plan o comienza con un caso de ejemplo. ALMA compara <strong>coberturas reales, clínicas, topes efectivos y ahorro potencial</strong>, no solamente porcentajes. Para la demostración utilizamos una propuesta histórica anonimizada.</p>
+<p class="intro">Comienza con una propuesta histórica real anonimizada o un caso totalmente ficticio. El motor muestra ahorros, coberturas y límites documentales; <strong>el siguiente paso es activar Muse Spark para analizar contratos nuevos en la plataforma pública.</strong> El modelo ya se probó por separado con un PDF, pero no se ejecuta en esta versión descargable.</p>
 <div class="steps" id="progress"><span>1 · Tus datos</span><span>2 · Tus preferencias</span><span>3 · Tu contrato</span><span>4 · Tu comparación</span></div>
 <section class="panel step on" id="step0">
  <h2>Hola, ¿qué necesitas comparar?</h2>
@@ -101,12 +101,12 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
  <p class="hint">El sistema utiliza únicamente los datos no identificatorios transcritos de una propuesta comercial histórica. Incluye un contrato de origen con 100 % nominal hospitalario sujeto a topes y cuatro propuestas con precios finales cotizados en UF.</p>
  <label class="opt"><input type="radio" name="mode" value="ficticio"> Probar un contrato ficticio y ver una comparación completa</label>
  <p class="hint">Ejemplo enteramente inventado, con una alternativa que cumple y otras descartadas por topes, red o misma isapre. <a href="prueba.html">Abrir también en una pantalla independiente</a>.</p>
- <label class="opt"><input type="radio" name="mode" value="upload"> Subir un contrato PDF y analizarlo con Muse Spark</label>
- <p class="hint"><a href="https://www.planisapre.com/cotizador/pdf/CS50400826.pdf" target="_blank" rel="noopener noreferrer">Ver y descargar un contrato real de ejemplo: Esencial CS50400826 (PDF público)</a>. Después puedes subirlo aquí para que ALMA lo lea con Meta.</p>
+ <label class="opt"><input type="radio" name="mode" value="upload"> Subir un PDF · disponible con servidor Muse Spark</label>
+ <p class="hint"><a href="https://www.planisapre.com/cotizador/pdf/CS50400826.pdf" target="_blank" rel="noopener noreferrer">Ver y descargar contrato de ejemplo: Esencial CS50400826 (PDF público)</a>. Puedes probar su análisis solamente en un servidor con Meta habilitado.</p>
  <input id="file" type="file" accept=".pdf,application/pdf">
  <label class="consentLabel"><input type="checkbox" id="agreeMeta"> Autorizo enviar este documento a Meta Model API exclusivamente para esta demostración. Usaré un contrato público o sin datos personales.</label>
- <p class="hint" id="metaStatus">Para analizar un PDF nuevo debe estar ejecutándose la versión con servidor y créditos Meta habilitados.</p>
- <div class="banner warn" id="pdfLimit">La versión descargable funciona sin servidor para los casos precargados. <b>Un PDF nuevo se analiza de verdad solo en la versión con backend y Muse Spark habilitado.</b> Si la API no está disponible, ALMA no inventará el resultado.</div>
+ <p class="hint" id="metaStatus">Próximo paso para la demostración pública: desplegar el servidor y activar la lectura con Muse Spark. La extracción de un PDF real ya se comprobó en una ejecución independiente.</p>
+ <div class="banner warn" id="pdfLimit"><b>Prototipo con datos reales; el próximo paso es Muse Spark en la experiencia pública.</b> Esta página descargable no analiza PDF nuevos. El backend contiene la integración, pero necesita despliegue y créditos habilitados. Sin conexión, ALMA no simula haber leído tu documento. <a href="https://github.com/naranguizv-blip/ALMA-Match-Hackathon-2026/actions/runs/41368596616" target="_blank" rel="noopener noreferrer">Ver evidencia de la prueba independiente con Meta</a>.</div>
  <details><summary>¿Qué sabemos del contrato actual precargado?</summary><p>Prestaciones hospitalarias nominales 100 % con topes, entre ellos día cama 7,4 UF, medicamentos hospitalarios 15 UF y materiales 18 UF, según la primera página de la propuesta histórica. Estos topes deben contrastarse por prestación con las alternativas, no solo por el porcentaje.</p></details>
  <div class="btnrow"><button class="btn ghost back" data-go="1">Volver</button><button class="btn" id="next2">Analizar caso precargado →</button></div>
 </section>
