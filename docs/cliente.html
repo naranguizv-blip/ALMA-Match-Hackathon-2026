@@ -99,13 +99,20 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
  <h2>Selecciona tu plan actual</h2>
  <label class="opt"><input type="radio" name="mode" value="demo" checked> Usar caso real anonimizado: Nueva Masvida → Consalud</label>
  <p class="hint">El sistema utiliza únicamente los datos no identificatorios transcritos de una propuesta comercial histórica. Incluye un contrato de origen con 100 % nominal hospitalario sujeto a topes y cuatro propuestas con precios finales cotizados en UF.</p>
- <label class="opt"><input type="radio" name="mode" value="upload"> Quiero subir mi contrato PDF</label>
+ <label class="opt"><input type="radio" name="mode" value="ficticio"> Probar un contrato ficticio y ver una comparación completa</label>
+ <p class="hint">Ejemplo enteramente inventado, con una alternativa que cumple y otras descartadas por topes, red o misma isapre. <a href="prueba.html">Abrir también en una pantalla independiente</a>.</p>
+ <label class="opt"><input type="radio" name="mode" value="upload"> Subir un contrato PDF y analizarlo con Muse Spark</label>
+ <p class="hint"><a href="https://www.planisapre.com/cotizador/pdf/CS50400826.pdf" target="_blank" rel="noopener noreferrer">Ver y descargar un contrato real de ejemplo: Esencial CS50400826 (PDF público)</a>. Después puedes subirlo aquí para que ALMA lo lea con Meta.</p>
  <input id="file" type="file" accept=".pdf,application/pdf">
- <div class="banner warn" id="pdfLimit">La demo descargable usa un caso precargado. Un PDF diferente requiere el servidor con Muse Spark activado; <b>no se hará pasar una carga local por un análisis real</b>.</div>
+ <label class="consentLabel"><input type="checkbox" id="agreeMeta"> Autorizo enviar este documento a Meta Model API exclusivamente para esta demostración. Usaré un contrato público o sin datos personales.</label>
+ <p class="hint" id="metaStatus">Para analizar un PDF nuevo debe estar ejecutándose la versión con servidor y créditos Meta habilitados.</p>
+ <div class="banner warn" id="pdfLimit">La versión descargable funciona sin servidor para los casos precargados. <b>Un PDF nuevo se analiza de verdad solo en la versión con backend y Muse Spark habilitado.</b> Si la API no está disponible, ALMA no inventará el resultado.</div>
  <details><summary>¿Qué sabemos del contrato actual precargado?</summary><p>Prestaciones hospitalarias nominales 100 % con topes, entre ellos día cama 7,4 UF, medicamentos hospitalarios 15 UF y materiales 18 UF, según la primera página de la propuesta histórica. Estos topes deben contrastarse por prestación con las alternativas, no solo por el porcentaje.</p></details>
  <div class="btnrow"><button class="btn ghost back" data-go="1">Volver</button><button class="btn" id="next2">Analizar caso precargado →</button></div>
 </section>
 <section class="panel step" id="step3">
+<div id="pdfReport" style="display:none" aria-live="polite"></div>
+<div id="historicalResults">
   <div class="eyebrow">TU RESULTADO · COMPARACIÓN PERSONALIZADA</div>
   <h2 id="welcome">Tu comparación</h2>
   <p id="resultStatus" class="banner">Analizando las alternativas del caso de ejemplo…</p>
@@ -157,6 +164,7 @@ footer{color:#607b80;font-size:12px;text-align:center;padding:15px}
   </div>
   <div class="btnrow"><button class="btn ghost back" data-go="2">Volver</button>
     <button class="btn under" id="contact" type="button" disabled>Solicitar revisión por WhatsApp</button></div>
+</div>
 </section>
 <footer>ALMA Match · Prototipo experimental para Meta Hackathon. Datos del formulario solo en memoria del navegador; no se transfieren. Caso histórico anonimizado, parámetros fechados, sin garantía de contratación.</footer>
 </main>
@@ -239,13 +247,43 @@ $('next1').onclick=()=>{
  if(!(parseUF($('pay').value)>0))return err('Ingresa cuánto pagas en UF.');
  goto(2);
 };
-$('next2').onclick=()=>{
+$('next2').onclick=async()=>{
  const mode=document.querySelector('input[name="mode"]:checked').value;
- if(mode!=='demo')return err('El PDF fue seleccionado en tu equipo, pero la demo estática no ejecuta Muse Spark. Para analizar contratos nuevos necesitamos habilitar el servidor Meta con controles de privacidad y gasto.');
- if($('isapre').value!=='Nueva Masvida')return err('Este caso histórico corresponde a Nueva Masvida; elige esa isapre para probar sus alternativas de Consalud.');
+ if(mode==='ficticio'){window.location.href='prueba.html';return;}
+ if(mode==='upload'){
+   const file=$('file').files?.[0];
+   if(!file)return err('Selecciona un contrato PDF.');
+   if(!file.name.toLowerCase().endsWith('.pdf')||file.size>6*1024*1024)
+     return err('Necesitamos un PDF de hasta 6 MB.');
+   if(!$('agreeMeta').checked)return err('Autoriza el envío a Meta de un contrato público o sin datos personales.');
+   const original=$('next2').textContent;
+   $('next2').disabled=true;$('next2').textContent='Muse Spark está analizando tu documento…';
+   $('metaStatus').textContent='Procesando PDF real con Meta. No se generarán cotizaciones sin datos suficientes.';
+   try{
+     const fields=new FormData();
+     fields.append('pdf',file);
+     fields.append('isapre_actual',$('isapre').value);
+     const places=$('clinic').value==='davila'?['Clínica Dávila']:[$('clinic').value==='santamaria'?'Clínica Santa María':'Otra'];
+     fields.append('clinicas',JSON.stringify(places));
+     fields.append('pago_actual_uf',String(parseUF($('pay').value)));
+     const response=await fetch('/api/comparar-pdf-jurado',{method:'POST',body:fields});
+     const data=await response.json();
+     if(!response.ok)throw Error(data.detail||'Meta no completó la solicitud.');
+     renderUploaded(data);goto(3);
+   }catch(e){
+     $('metaStatus').textContent='No se pudo analizar este PDF: '+e.message+
+       '. Si abriste un archivo HTML descargado, necesitas abrir la aplicación desplegada en un servidor. Los casos precargados sí funcionan sin servidor.';
+   }finally{
+     $('next2').disabled=false;$('next2').textContent=original;
+   }
+   return;
+ }
+ if($('isapre').value!=='Nueva Masvida')
+   return err('Este caso histórico corresponde a Nueva Masvida. Para otra isapre, sube un PDF o utiliza el ejemplo ficticio.');
  const ages=chargeAges();
  if(ages.some(x=>factorFor(x,true)===null))return err('Revisa las edades de las cargas.');
  if(factorFor(Number($('age').value),false)===null)return err('Edad de titular inválida.');
+ $('historicalResults').style.display='block';$('pdfReport').style.display='none';
  renderResults();goto(3);
 };
 document.querySelectorAll('.back').forEach(button=>button.onclick=()=>goto(Number(button.dataset.go)));
@@ -319,6 +357,79 @@ function renderCards(){
  // Tres alternativas principales; la cuarta se conserva accesible para la demo.
  [2,0,1].forEach(i=>cards.appendChild(optionCard(quotes[i],i)));
  const extra=$('extraPlan');extra.replaceChildren(optionCard(quotes[3],3,true));
+}
+function renderUploaded(data){
+ $('historicalResults').style.display='none';
+ const root=$('pdfReport');root.style.display='block';
+ root.replaceChildren();
+ const append=(tag,content,cls)=>{
+   const el=document.createElement(tag);
+   el.textContent=content;if(cls)el.className=cls;root.appendChild(el);return el;
+ };
+ append('div','ANÁLISIS DOCUMENTAL REAL · MUSE SPARK','eyebrow');
+ append('h2','ALMA leyó tu contrato');
+ append('p','Isapre: '+(data.contrato?.isapre||'No identificada')+
+   ' · Código: '+(data.contrato?.codigo_plan||'No identificado')+
+   ' · Páginas: '+(data.paginas_pdf||'—'));
+ const verify=data.verificacion_documental||{};
+ append('p',verify.aprobado_para_comparacion?
+  'Las citas indicadas se localizaron en el texto extraído del PDF; la interpretación contractual sigue sujeta a revisión.':
+  'ALMA encontró información que necesita revisión antes de afirmar equivalencias.','banner warn');
+ const reasons=verify.motivos||[];
+ if(reasons.length)append('p','Motivos: '+reasons.slice(0,3).join('; '),'hint');
+ const sections=[
+   ['Hospitalaria',data.contrato?.hospitalaria],
+   ['Ambulatoria',data.contrato?.ambulatoria],
+   ['Urgencias',data.contrato?.urgencia],
+   ['Prótesis, órtesis y osteosíntesis',data.contrato?.protesis_ortesis],
+   ['Topes y sus periodos',data.contrato?.topes],
+ ];
+ for(const [name,rows] of sections){
+   const article=document.createElement('div');article.className='card';
+   const head=document.createElement('h3');head.textContent=name;article.appendChild(head);
+   if(!Array.isArray(rows)||!rows.length){
+     const text=document.createElement('p');text.className='hint';
+     text.textContent='No se identificó información verificable en este documento.';article.appendChild(text);
+   }else{
+     for(const r of rows.slice(0,4)){
+       const p=document.createElement('p');p.className='hint';
+       p.textContent=(r.descripcion||'Dato no disponible')+' · página '+(r.pagina_pdf??'por verificar');
+       article.appendChild(p);
+     }
+   }
+   root.appendChild(article);
+ }
+ append('h3','Otras isapres: opciones para revisar');
+ append('p','No son cotizaciones personalizadas. En cada opción indicamos lo que falta comprobar antes de recomendarla.','hint');
+ const options=data.opciones_para_revisar||[];
+ if(!options.length)append('p','No hay candidatos con documentación suficiente para las clínicas solicitadas.','banner warn');
+ options.forEach(item=>{
+   const card=document.createElement('article');card.className='card';
+   const h=document.createElement('h3');h.textContent=item.isapre+' · '+item.nombre;card.appendChild(h);
+   const desc=document.createElement('p');
+   desc.textContent='Hospitalaria Dávila: '+(item.hospitalaria_davila??'Por comprobar')+' % · Ambulatoria: '+
+    (item.ambulatoria_davila??'Por comprobar')+' %. '+item.advertencia;
+   card.appendChild(desc);
+   if(item.precio_uf_historico){
+     const price=document.createElement('p');price.className='hint';
+     price.textContent='Precio de una propuesta histórica para otro grupo: '+item.precio_uf_historico+
+       ' UF. No aplicable automáticamente a tu edad/cargas. Ahorro: por determinar.';
+     card.appendChild(price);
+   }
+   if(item.pdf_url){
+     const link=document.createElement('a');link.href=item.pdf_url;
+     link.target='_blank';link.rel='noopener noreferrer';
+     link.textContent='Ver y descargar contrato PDF';card.appendChild(link);
+   }else{
+     const note=document.createElement('p');note.className='hint';
+     note.textContent='PDF contractual de esta alternativa: pendiente de confirmar enlace y derechos de publicación.';
+     card.appendChild(note);
+   }
+   root.appendChild(card);
+ });
+ append('p',data.aviso||'Se requiere revisión de cotización, red y topes antes de recomendar.','status');
+ const back=document.createElement('button');back.className='btn ghost';back.textContent='← Volver y analizar otro contrato';
+ back.onclick=()=>goto(2);root.appendChild(back);
 }
 function renderResults(){
  const pay=parseUF($('pay').value);
