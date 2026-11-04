@@ -1,0 +1,1 @@
+Aún no se ha seleccionado licencia de código abierto. Antes de hacer público el repositorio se revisarán las bases del concurso y los efectos legales de la licencia. No incluir datos de clientes, secretos, PDF de terceros ni código privado de ALMA.

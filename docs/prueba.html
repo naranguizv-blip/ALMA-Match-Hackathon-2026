@@ -1,0 +1,35 @@
+<!doctype html><html lang="es-CL"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALMA Match · Verificación de topes (simulación)</title>
+<style>body{margin:0;background:#f3f8f8;color:#18343c;font:16px/1.5 system-ui,Arial}*{box-sizing:border-box}
+header{background:#103543;color:white;padding:21px}main{max-width:930px;margin:auto;padding:18px}a{color:#07837e}h1{font-size:clamp(25px,5vw,38px);line-height:1.18}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.card{background:white;border:1px solid #dbe9e8;padding:19px;border-radius:16px;margin:13px 0}
+.card.feature{border:2px solid #00897d}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.kpis div{background:#ecf7f5;border-radius:10px;padding:10px;text-align:center}.kpis b{font-size:20px;display:block}.kpis small{font-size:11px;color:#60747a}
+button{background:#007e78;border:0;border-radius:10px;color:white;padding:12px 14px;font:inherit;font-weight:700;cursor:pointer}
+button.alt{color:#155a58;background:#e0efed}.alert{padding:12px;border-radius:10px;background:#fff4df;color:#755018}
+.good{color:#086d56;font-weight:800}.bar{height:12px;background:#e0edeb;border-radius:9px;overflow:hidden}.bar>div{height:100%;background:#00a092}
+.detail{border-top:1px solid #e6eeee;padding-top:10px;margin-top:10px}.danger{color:#93600b}
+@media(max-width:670px){.grid{grid-template-columns:1fr}.kpis b{font-size:17px}button{width:100%;margin:4px 0}}</style></head>
+<body><header><b>ALMA Match</b> · Verificación de diferencias contractuales</header>
+<main><p><a href="index.html">Ver el comparativo histórico real con precios en UF</a></p>
+<h1>¿Un porcentaje igual significa una cobertura igual?</h1>
+<p>Este ejemplo usa <b>planes completamente ficticios</b>. Las cifras son inventadas para mostrar cómo ALMA detecta límites de cobertura y rechaza alternativas que no cumplen las condiciones.</p>
+<div><button id="positive">Alternativa comparable</button> <button class="alt" id="negative">Sin alternativa comparable</button></div>
+<div id="render"></div>
+<div class="card"><h3>Qué se demuestra técnicamente</h3><p>ALMA Match usa reglas deterministas para distinguir topes por evento y por año, red de clínicas y cambio entre isapres. La verificación documental por páginas está implementada en Python. Muse Spark se probó con un PDF real en una ejecución independiente, <b>no en esta página estática</b>.</p><p><small>Las cifras ilustrativas no deben confundirse con precios, clínicas contratadas ni convenios vigentes.</small></p></div>
+</main><script>
+const out=document.getElementById('render');
+function show(ok){
+let h='<div class="grid"><article class="card"><small>PLAN ACTUAL · FICTICIA A</small><h2>Plan de prueba A</h2><div class="kpis"><div><small>Hospitalaria</small><b>80 %</b></div><div><small>Ambulatoria</small><b>70 %</b></div><div><small>Urgencia</small><b>60 %</b></div></div><p>Clínica Central (inventada). Topes: hospitalaria 400 UF/año, ambulatoria 60 UF/año, urgencia 5 UF/evento.</p></article>';
+if(ok)h+='<article class="card feature"><small class="good">ALTERNATIVA COMPARABLE · FICTICIA B</small><h2>Plan de prueba B</h2><div class="kpis"><div><small>Hospitalaria</small><b>85 %</b></div><div><small>Ambulatoria</small><b>75 %</b></div><div><small>Urgencia</small><b>65 %</b></div></div><p>Misma clínica ficticia. Topes: hospitalaria 450 UF/año, ambulatoria 70 UF/año, urgencia 6 UF/evento.</p></article>';
+else h+='<article class="card feature"><small class="danger">SIN ALTERNATIVA COMPARABLE</small><h2>Resultado del verificador</h2><p>El plan disponible conserva un 60 % en urgencias, pero su tope baja de 5 UF a 2 UF por evento. Otro tiene una clínica distinta y otro pertenece a la misma isapre.</p><p class="alert"><b>ALMA no recomienda cambiar:</b> faltan alternativas comparables.</p></article>';
+h+='</div><article class="card"><h2>Las reglas explican la decisión</h2>';
+if(ok)h+='<p class="good">Pasa las reglas de la simulación</p><p>Hospitalaria: 400 → 450 UF/año</p><p>Ambulatoria: 60 → 70 UF/año</p><p>Urgencia: 5 → 6 UF/evento</p>';
+else h+='<p class="danger">Se descarta por tope de urgencia inferior</p><p>Plan de prueba C: 60 % urgencia, pero 2 UF por evento, frente a 5 UF actuales.</p><p>Plan de prueba D: la clínica de la red no coincide.</p><p>Plan de prueba E: pertenece a la misma isapre del cliente.</p>';
+h+='<div class="detail"><small>Precios no verificados: no hay ahorro calculado. Datos 100 % ficticios; esta página es una demostración visual de las reglas.</small></div></article>';
+out.innerHTML=h;
+}
+document.getElementById('positive').onclick=()=>show(true);
+document.getElementById('negative').onclick=()=>show(false);
+show(true);
+</script></body></html>
